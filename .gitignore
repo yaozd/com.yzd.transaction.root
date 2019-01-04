@@ -75,4 +75,4 @@ target/
 Thumbs.db
 package-install/
 install-package/
-
+com.yzd.transaction.mybatis.root/
