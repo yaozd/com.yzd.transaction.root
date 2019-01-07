@@ -7,17 +7,21 @@ public class TbTransactionActivity {
 
     private Long txcId;
 
-    private Integer txcTypeValue;
+    private Integer txcActivityCode;
 
-    private String txcTypeName;
+    private String txcActivityName;
 
-    private String txcDetailJaon;
+    private Integer txcTriggerStatus;
 
-    private Integer txcState;
+    private Integer txcExecuteStatus;
+
+    private String txcExecuteLog;
 
     private Date gmtCreate;
 
     private Date gmtModified;
+
+    private Integer gmtIsDeleted;
 
     public Long getId() {
         return id;
@@ -35,36 +39,44 @@ public class TbTransactionActivity {
         this.txcId = txcId;
     }
 
-    public Integer getTxcTypeValue() {
-        return txcTypeValue;
+    public Integer getTxcActivityCode() {
+        return txcActivityCode;
     }
 
-    public void setTxcTypeValue(Integer txcTypeValue) {
-        this.txcTypeValue = txcTypeValue;
+    public void setTxcActivityCode(Integer txcActivityCode) {
+        this.txcActivityCode = txcActivityCode;
     }
 
-    public String getTxcTypeName() {
-        return txcTypeName;
+    public String getTxcActivityName() {
+        return txcActivityName;
     }
 
-    public void setTxcTypeName(String txcTypeName) {
-        this.txcTypeName = txcTypeName == null ? null : txcTypeName.trim();
+    public void setTxcActivityName(String txcActivityName) {
+        this.txcActivityName = txcActivityName == null ? null : txcActivityName.trim();
     }
 
-    public String getTxcDetailJaon() {
-        return txcDetailJaon;
+    public Integer getTxcTriggerStatus() {
+        return txcTriggerStatus;
     }
 
-    public void setTxcDetailJaon(String txcDetailJaon) {
-        this.txcDetailJaon = txcDetailJaon == null ? null : txcDetailJaon.trim();
+    public void setTxcTriggerStatus(Integer txcTriggerStatus) {
+        this.txcTriggerStatus = txcTriggerStatus;
     }
 
-    public Integer getTxcState() {
-        return txcState;
+    public Integer getTxcExecuteStatus() {
+        return txcExecuteStatus;
     }
 
-    public void setTxcState(Integer txcState) {
-        this.txcState = txcState;
+    public void setTxcExecuteStatus(Integer txcExecuteStatus) {
+        this.txcExecuteStatus = txcExecuteStatus;
+    }
+
+    public String getTxcExecuteLog() {
+        return txcExecuteLog;
+    }
+
+    public void setTxcExecuteLog(String txcExecuteLog) {
+        this.txcExecuteLog = txcExecuteLog == null ? null : txcExecuteLog.trim();
     }
 
     public Date getGmtCreate() {
@@ -81,5 +93,13 @@ public class TbTransactionActivity {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getGmtIsDeleted() {
+        return gmtIsDeleted;
+    }
+
+    public void setGmtIsDeleted(Integer gmtIsDeleted) {
+        this.gmtIsDeleted = gmtIsDeleted;
     }
 }

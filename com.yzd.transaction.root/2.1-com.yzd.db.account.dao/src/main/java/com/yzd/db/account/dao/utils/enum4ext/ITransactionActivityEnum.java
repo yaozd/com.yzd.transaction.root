@@ -6,6 +6,33 @@ package com.yzd.db.account.dao.utils.enum4ext;
 public interface ITransactionActivityEnum {
 
     /**
+     * 事务活动代码与名称
+     * 每个活动对应一个交易流程状态
+     */
+    enum Activities implements ITransactionActivityEnum{
+        TRANSFER_MONEY(1,"转账交易");
+
+        //region
+        //---------------------------------------------------
+        private Activities(Integer code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+        private final String name;
+        private final Integer code;
+
+        public Integer getCode() {
+            return code;
+        }
+        public String getName() {
+            return name;
+        }
+
+        //---------------------------------------------------
+        //endregion
+    }
+
+    /**
      * 主事务-调度结果
      */
     enum TriggerStatus implements ITransactionActivityEnum {
@@ -36,7 +63,7 @@ public interface ITransactionActivityEnum {
      * 主事务-执行结果
      */
     enum ExecuteStatus implements ITransactionActivityEnum {
-        EXECUTE_SUCCESS(1,"执行成功"),EXECUTE_EXCEPTION(2,"执行异常"),ROLLBACK_SUCCESS(3,"回滚成功");
+        EXECUTE_RUNNING(1,"正在执行"),EXECUTE_EXCEPTION(2,"执行异常"),EXECUTE_SUCCESS(3,"执行成功"),ROLLBACK_SUCCESS(4,"回滚成功");
         //region
         //---------------------------------------------------
         private ExecuteStatus(Integer status, String describe) {
