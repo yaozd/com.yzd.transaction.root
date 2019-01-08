@@ -33,7 +33,7 @@ public class AccountImpl implements IAccountInf {
         }
         //扣除用户余额
         int rowCount = tbAccountDao.updateByPrimaryKeyForPayment(item);
-        if (item != null) {
+        if (item == null) {
             try {
                 Thread.sleep(100000);
             } catch (InterruptedException e) {
