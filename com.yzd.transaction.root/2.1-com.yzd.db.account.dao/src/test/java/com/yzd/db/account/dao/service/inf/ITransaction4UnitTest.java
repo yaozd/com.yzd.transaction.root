@@ -46,13 +46,15 @@ public class ITransaction4UnitTest extends A1BaseUnitTest {
         Long transactionId=TransactionContext.getTransactionId();
         ITransactionActivityDetailStatusEnum detailStatusEnum=ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
         String txcBranceId= TransactionUtil.getTxcBranceId(detailStatusEnum);
-        Integer txcState=detailStatusEnum.getStatus();
+        Integer txcStepState=detailStatusEnum.getStatus();
+        String txcStepName=detailStatusEnum.getName();
         //
         TbTransactionActivityDetail itemTxcStep01=new TbTransactionActivityDetail();
         itemTxcStep01.setTxcId(transactionId);
         itemTxcStep01.setTxcBranceId(txcBranceId);
         itemTxcStep01.setTxcDetailJaon(txcDetailJaon);
-        itemTxcStep01.setTxcState(txcState);
+        itemTxcStep01.setTxcStepStatus(txcStepState);
+        itemTxcStep01.setTxcStepName(txcStepName);
         itemTxcStep01.setGmtCreate(new Date());
         itemTxcStep01.setGmtModified(new Date());
         iTransactionActivityDetailInf.insert(itemTxcStep01);

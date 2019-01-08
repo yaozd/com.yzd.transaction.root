@@ -5,16 +5,18 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="txc_id" jdbcType="BIGINT" property="txcId" />
     <result column="txc_brance_id" jdbcType="VARCHAR" property="txcBranceId" />
-    <result column="txc_type_value" jdbcType="INTEGER" property="txcTypeValue" />
-    <result column="txc_type_name" jdbcType="VARCHAR" property="txcTypeName" />
+    <result column="txc_step_status" jdbcType="INTEGER" property="txcStepStatus" />
+    <result column="txc_step_name" jdbcType="VARCHAR" property="txcStepName" />
     <result column="txc_detail_jaon" jdbcType="VARCHAR" property="txcDetailJaon" />
-    <result column="txc_state" jdbcType="INTEGER" property="txcState" />
+    <result column="txc_rollback_status" jdbcType="INTEGER" property="txcRollbackStatus" />
+    <result column="txc_log" jdbcType="VARCHAR" property="txcLog" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="gmt_is_deleted" jdbcType="INTEGER" property="gmtIsDeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, txc_id, txc_brance_id, txc_type_value, txc_type_name, txc_detail_jaon, txc_state, 
-    gmt_create, gmt_modified
+    id, txc_id, txc_brance_id, txc_step_status, txc_step_name, txc_detail_jaon, txc_rollback_status, 
+    txc_log, gmt_create, gmt_modified, gmt_is_deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,23 +36,29 @@
       <if test="txcBranceId != null">
         txc_brance_id,
       </if>
-      <if test="txcTypeValue != null">
-        txc_type_value,
+      <if test="txcStepStatus != null">
+        txc_step_status,
       </if>
-      <if test="txcTypeName != null">
-        txc_type_name,
+      <if test="txcStepName != null">
+        txc_step_name,
       </if>
       <if test="txcDetailJaon != null">
         txc_detail_jaon,
       </if>
-      <if test="txcState != null">
-        txc_state,
+      <if test="txcRollbackStatus != null">
+        txc_rollback_status,
+      </if>
+      <if test="txcLog != null">
+        txc_log,
       </if>
       <if test="gmtCreate != null">
         gmt_create,
       </if>
       <if test="gmtModified != null">
         gmt_modified,
+      </if>
+      <if test="gmtIsDeleted != null">
+        gmt_is_deleted,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -60,23 +68,29 @@
       <if test="txcBranceId != null">
         #{txcBranceId,jdbcType=VARCHAR},
       </if>
-      <if test="txcTypeValue != null">
-        #{txcTypeValue,jdbcType=INTEGER},
+      <if test="txcStepStatus != null">
+        #{txcStepStatus,jdbcType=INTEGER},
       </if>
-      <if test="txcTypeName != null">
-        #{txcTypeName,jdbcType=VARCHAR},
+      <if test="txcStepName != null">
+        #{txcStepName,jdbcType=VARCHAR},
       </if>
       <if test="txcDetailJaon != null">
         #{txcDetailJaon,jdbcType=VARCHAR},
       </if>
-      <if test="txcState != null">
-        #{txcState,jdbcType=INTEGER},
+      <if test="txcRollbackStatus != null">
+        #{txcRollbackStatus,jdbcType=INTEGER},
+      </if>
+      <if test="txcLog != null">
+        #{txcLog,jdbcType=VARCHAR},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
       <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtIsDeleted != null">
+        #{gmtIsDeleted,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -89,17 +103,20 @@
       <if test="txcBranceId != null">
         txc_brance_id = #{txcBranceId,jdbcType=VARCHAR},
       </if>
-      <if test="txcTypeValue != null">
-        txc_type_value = #{txcTypeValue,jdbcType=INTEGER},
+      <if test="txcStepStatus != null">
+        txc_step_status = #{txcStepStatus,jdbcType=INTEGER},
       </if>
-      <if test="txcTypeName != null">
-        txc_type_name = #{txcTypeName,jdbcType=VARCHAR},
+      <if test="txcStepName != null">
+        txc_step_name = #{txcStepName,jdbcType=VARCHAR},
       </if>
       <if test="txcDetailJaon != null">
         txc_detail_jaon = #{txcDetailJaon,jdbcType=VARCHAR},
       </if>
-      <if test="txcState != null">
-        txc_state = #{txcState,jdbcType=INTEGER},
+      <if test="txcRollbackStatus != null">
+        txc_rollback_status = #{txcRollbackStatus,jdbcType=INTEGER},
+      </if>
+      <if test="txcLog != null">
+        txc_log = #{txcLog,jdbcType=VARCHAR},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -107,8 +124,10 @@
       <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="gmtIsDeleted != null">
+        gmt_is_deleted = #{gmtIsDeleted,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-
 </mapper>

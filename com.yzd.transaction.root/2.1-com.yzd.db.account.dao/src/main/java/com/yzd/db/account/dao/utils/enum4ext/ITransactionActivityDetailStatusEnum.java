@@ -5,27 +5,28 @@ package com.yzd.db.account.dao.utils.enum4ext;
  */
 public interface ITransactionActivityDetailStatusEnum {
     Integer getStatus();
-    String getDescribe();
+    String getName();
 
     /**
      * 用户转账交易流程-状态列表
      */
     enum TransferMoney implements ITransactionActivityDetailStatusEnum{
         TRANSFER(1,"转账"),ENTER(2,"入账");
-        private TransferMoney(Integer status, String describe) {
+        private TransferMoney(Integer status, String name) {
             this.status = status;
-            this.describe = describe;
+            this.name = name;
         }
 
-        private final String describe;
+        private final String name;
         private final Integer status;
 
         public Integer getStatus() {
             return this.status;
         }
 
-        public String getDescribe() {
-            return this.describe;
+        @Override
+        public String getName() {
+            return name;
         }
     }
 }

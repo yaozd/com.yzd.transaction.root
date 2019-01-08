@@ -1,8 +1,10 @@
 package com.yzd.db.account.dao.service.inf;
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
+import com.yzd.db.account.dao.utils.transaction4ext.TransactionUtil;
 import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTransactionActivity;
 import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
@@ -33,26 +35,28 @@ public class IAccountInf4UnitTest extends A1BaseUnitTest {
         //事务-转账交易-初始化
         Long transactionId = initTransaction();
         //---------------------------------------------------------
+        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Transfer=ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
         //事务-转账交易-状态更新-扣款
         TbTransactionActivityDetail itemTxcStep01=new TbTransactionActivityDetail();
         itemTxcStep01.setTxcId(transactionId);
-        itemTxcStep01.setTxcBranceId(transactionId+"-"+"01");
-        itemTxcStep01.setTxcTypeValue(1);
-        itemTxcStep01.setTxcTypeName("扣款");
+        String txcBranceId4Transfer= TransactionUtil.getTxcBranceId(activityDetailStatusEnum4Transfer);
+        itemTxcStep01.setTxcBranceId(txcBranceId4Transfer);
+        itemTxcStep01.setTxcStepStatus(activityDetailStatusEnum4Transfer.getStatus());
+        itemTxcStep01.setTxcStepName(activityDetailStatusEnum4Transfer.getName());
         itemTxcStep01.setTxcDetailJaon("扣款详情");
-        itemTxcStep01.setTxcState(0);
         itemTxcStep01.setGmtCreate(new Date());
         itemTxcStep01.setGmtModified(new Date());
         iTransactionActivityDetailInf.insert(itemTxcStep01);
         //---------------------------------------------------------
+        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Enter=ITransactionActivityDetailStatusEnum.TransferMoney.ENTER;
         //事务-转账交易-状态更新-入账
         TbTransactionActivityDetail itemTxcStep02=new TbTransactionActivityDetail();
         itemTxcStep02.setTxcId(transactionId);
-        itemTxcStep02.setTxcBranceId(transactionId+"-"+"02");
-        itemTxcStep02.setTxcTypeValue(2);
-        itemTxcStep02.setTxcTypeName("入账");
+        String txcBranceId4Enter= TransactionUtil.getTxcBranceId(activityDetailStatusEnum4Enter);
+        itemTxcStep02.setTxcBranceId(txcBranceId4Enter);
+        itemTxcStep01.setTxcStepStatus(activityDetailStatusEnum4Enter.getStatus());
+        itemTxcStep01.setTxcStepName(activityDetailStatusEnum4Enter.getName());
         itemTxcStep02.setTxcDetailJaon("入账详情");
-        itemTxcStep02.setTxcState(0);
         itemTxcStep02.setGmtCreate(new Date());
         itemTxcStep02.setGmtModified(new Date());
         iTransactionActivityDetailInf.insert(itemTxcStep02);

@@ -9,17 +9,21 @@ public class TbTransactionActivityDetail {
 
     private String txcBranceId;
 
-    private Integer txcTypeValue;
+    private Integer txcStepStatus;
 
-    private String txcTypeName;
+    private String txcStepName;
 
     private String txcDetailJaon;
 
-    private Integer txcState;
+    private Integer txcRollbackStatus;
+
+    private String txcLog;
 
     private Date gmtCreate;
 
     private Date gmtModified;
+
+    private Integer gmtIsDeleted;
 
     public Long getId() {
         return id;
@@ -45,20 +49,20 @@ public class TbTransactionActivityDetail {
         this.txcBranceId = txcBranceId == null ? null : txcBranceId.trim();
     }
 
-    public Integer getTxcTypeValue() {
-        return txcTypeValue;
+    public Integer getTxcStepStatus() {
+        return txcStepStatus;
     }
 
-    public void setTxcTypeValue(Integer txcTypeValue) {
-        this.txcTypeValue = txcTypeValue;
+    public void setTxcStepStatus(Integer txcStepStatus) {
+        this.txcStepStatus = txcStepStatus;
     }
 
-    public String getTxcTypeName() {
-        return txcTypeName;
+    public String getTxcStepName() {
+        return txcStepName;
     }
 
-    public void setTxcTypeName(String txcTypeName) {
-        this.txcTypeName = txcTypeName == null ? null : txcTypeName.trim();
+    public void setTxcStepName(String txcStepName) {
+        this.txcStepName = txcStepName == null ? null : txcStepName.trim();
     }
 
     public String getTxcDetailJaon() {
@@ -69,12 +73,20 @@ public class TbTransactionActivityDetail {
         this.txcDetailJaon = txcDetailJaon == null ? null : txcDetailJaon.trim();
     }
 
-    public Integer getTxcState() {
-        return txcState;
+    public Integer getTxcRollbackStatus() {
+        return txcRollbackStatus;
     }
 
-    public void setTxcState(Integer txcState) {
-        this.txcState = txcState;
+    public void setTxcRollbackStatus(Integer txcRollbackStatus) {
+        this.txcRollbackStatus = txcRollbackStatus;
+    }
+
+    public String getTxcLog() {
+        return txcLog;
+    }
+
+    public void setTxcLog(String txcLog) {
+        this.txcLog = txcLog == null ? null : txcLog.trim();
     }
 
     public Date getGmtCreate() {
@@ -91,5 +103,13 @@ public class TbTransactionActivityDetail {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getGmtIsDeleted() {
+        return gmtIsDeleted;
+    }
+
+    public void setGmtIsDeleted(Integer gmtIsDeleted) {
+        this.gmtIsDeleted = gmtIsDeleted;
     }
 }
