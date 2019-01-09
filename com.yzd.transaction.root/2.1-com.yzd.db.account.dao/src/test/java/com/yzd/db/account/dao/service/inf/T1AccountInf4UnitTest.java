@@ -3,18 +3,27 @@ package com.yzd.db.account.dao.service.inf;
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
+import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionUtil;
+import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTransactionActivity;
 import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
+import com.yzd.db.account.entity.tableExt.TbAccountExt.TbAccount4Payment;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 /***
- * 测试-02
+ * 测试-01
  */
-public class ITransactionActivity4UnitTest extends A1BaseUnitTest {
+@Slf4j
+public class T1AccountInf4UnitTest extends A1BaseUnitTest {
+
+    @Autowired
+    IAccountInf iAccountInf;
+
     @Autowired
     ITransactionActivityInf iTransactionActivityInf;
 
@@ -22,15 +31,15 @@ public class ITransactionActivity4UnitTest extends A1BaseUnitTest {
     ITransactionActivityDetailInf iTransactionActivityDetailInf;
 
     @Test
-    public void paymentByTransaction(){
+    public void paymentByTransaction() {
         //事务-转账交易-初始化
         Long transactionId = initTransaction();
         //---------------------------------------------------------
-        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Transfer=ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
+        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Transfer = ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
         //事务-转账交易-状态更新-扣款
-        TbTransactionActivityDetail itemTxcStep01=new TbTransactionActivityDetail();
+        TbTransactionActivityDetail itemTxcStep01 = new TbTransactionActivityDetail();
         itemTxcStep01.setTxcId(transactionId);
-        String txcBranceId4Transfer= TransactionUtil.getTxcBranceId(activityDetailStatusEnum4Transfer);
+        String txcBranceId4Transfer = TransactionUtil.getTxcBranceId(activityDetailStatusEnum4Transfer);
         itemTxcStep01.setTxcBranceId(txcBranceId4Transfer);
         itemTxcStep01.setTxcStepStatus(activityDetailStatusEnum4Transfer.getStatus());
         itemTxcStep01.setTxcStepName(activityDetailStatusEnum4Transfer.getName());
@@ -39,11 +48,11 @@ public class ITransactionActivity4UnitTest extends A1BaseUnitTest {
         itemTxcStep01.setGmtModified(new Date());
         iTransactionActivityDetailInf.insert(itemTxcStep01);
         //---------------------------------------------------------
-        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Enter=ITransactionActivityDetailStatusEnum.TransferMoney.ENTER;
+        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Enter = ITransactionActivityDetailStatusEnum.TransferMoney.ENTER;
         //事务-转账交易-状态更新-入账
-        TbTransactionActivityDetail itemTxcStep02=new TbTransactionActivityDetail();
+        TbTransactionActivityDetail itemTxcStep02 = new TbTransactionActivityDetail();
         itemTxcStep02.setTxcId(transactionId);
-        String txcBranceId4Enter= TransactionUtil.getTxcBranceId(activityDetailStatusEnum4Enter);
+        String txcBranceId4Enter = TransactionUtil.getTxcBranceId(activityDetailStatusEnum4Enter);
         itemTxcStep02.setTxcBranceId(txcBranceId4Enter);
         itemTxcStep01.setTxcStepStatus(activityDetailStatusEnum4Enter.getStatus());
         itemTxcStep01.setTxcStepName(activityDetailStatusEnum4Enter.getName());
@@ -55,12 +64,13 @@ public class ITransactionActivity4UnitTest extends A1BaseUnitTest {
         //事务-转账交易-完成
         completeTransaction(transactionId);
     }
+
     private void completeTransaction(Long transactionId) {
-        TbTransactionActivity tbTransactionActivity=iTransactionActivityInf.selectByTxcId(transactionId);
-        ITransactionActivityEnum.TriggerStatus triggerStatus=ITransactionActivityEnum.TriggerStatus.COMPETE;
-        ITransactionActivityEnum.ExecuteStatus executeStatus=ITransactionActivityEnum.ExecuteStatus.EXECUTE_SUCCESS;
+        TbTransactionActivity tbTransactionActivity = iTransactionActivityInf.selectByTxcId(transactionId);
+        ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.COMPETE;
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_SUCCESS;
         //
-        TbTransactionActivity item=new TbTransactionActivity();
+        TbTransactionActivity item = new TbTransactionActivity();
         item.setId(tbTransactionActivity.getId());
         item.setTxcTriggerStatus(triggerStatus.getStatus());
         item.setTxcExecuteStatus(executeStatus.getStatus());
@@ -70,12 +80,12 @@ public class ITransactionActivity4UnitTest extends A1BaseUnitTest {
     }
 
     private Long initTransaction() {
-        Long transactionId=System.currentTimeMillis();
-        ITransactionActivityEnum.Activities activitiy=ITransactionActivityEnum.Activities.TRANSFER_MONEY;
-        ITransactionActivityEnum.TriggerStatus triggerStatus=ITransactionActivityEnum.TriggerStatus.RUNNING;
-        ITransactionActivityEnum.ExecuteStatus executeStatus=ITransactionActivityEnum.ExecuteStatus.EXECUTE_RUNNING;
+        Long transactionId = System.currentTimeMillis();
+        ITransactionActivityEnum.Activities activitiy = ITransactionActivityEnum.Activities.TRANSFER_MONEY;
+        ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.RUNNING;
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_RUNNING;
         //
-        TbTransactionActivity item=new TbTransactionActivity();
+        TbTransactionActivity item = new TbTransactionActivity();
         item.setTxcId(transactionId);
         item.setTxcActivityCode(activitiy.getCode());
         item.setTxcActivityName(activitiy.getName());
@@ -88,6 +98,17 @@ public class ITransactionActivity4UnitTest extends A1BaseUnitTest {
         //
         iTransactionActivityInf.insert(item);
         return transactionId;
+    }
+
+    @Test
+    public void payment() {
+        log.info("////////////////////////////////////////");
+        TbAccount item = iAccountInf.selectById(5L);
+        log.info("before account:" + FastJsonUtil.serialize(item));
+        TbAccount4Payment itemPay = TbAccount4Payment.toTbAccout4Payment(item);
+        itemPay.setPayMoney(10L);
+        log.info("扣款日志:" + FastJsonUtil.serialize(itemPay));
+        iAccountInf.payment(itemPay);
     }
 
 }

@@ -20,36 +20,37 @@ import java.util.Date;
  * 测试-03
  */
 @Slf4j
-public class ITransaction4UnitTest extends A1BaseUnitTest {
+public class T3Transaction4UnitTest extends A1BaseUnitTest {
     @Autowired
     ITransactionActivityInf iTransactionActivityInf;
     @Autowired
     ITransactionActivityDetailInf iTransactionActivityDetailInf;
     @Autowired
     IAccountInf iAccountInf;
+
     @Test
-    public void paymentByTransactionContext(){
+    public void paymentByTransactionContext() {
         //事务-转账交易-初始化
         initTransaction();
         //--------------------
-        log.info("当前事务ID="+TransactionContext.getTransactionId());
+        log.info("当前事务ID=" + TransactionContext.getTransactionId());
         //--------------------
         //事务-转账交易-状态更新-扣款
-        Long userId=5L;
-        Long payMoney=10L;
+        Long userId = 5L;
+        Long payMoney = 10L;
         TbAccount item = iAccountInf.selectById(userId);
-        TbAccount4Payment itemPay=TbAccount4Payment.toTbAccout4Payment(item);
+        TbAccount4Payment itemPay = TbAccount4Payment.toTbAccout4Payment(item);
         itemPay.setPayMoney(payMoney);
         iAccountInf.payment(itemPay);
         //事务-转账交易-状态更新-扣款
-        String txcDetailJaon=FastJsonUtil.serialize(itemPay);
-        Long transactionId=TransactionContext.getTransactionId();
-        ITransactionActivityDetailStatusEnum detailStatusEnum=ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
-        String txcBranceId= TransactionUtil.getTxcBranceId(detailStatusEnum);
-        Integer txcStepState=detailStatusEnum.getStatus();
-        String txcStepName=detailStatusEnum.getName();
+        String txcDetailJaon = FastJsonUtil.serialize(itemPay);
+        Long transactionId = TransactionContext.getTransactionId();
+        ITransactionActivityDetailStatusEnum detailStatusEnum = ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
+        String txcBranceId = TransactionUtil.getTxcBranceId(detailStatusEnum);
+        Integer txcStepState = detailStatusEnum.getStatus();
+        String txcStepName = detailStatusEnum.getName();
         //
-        TbTransactionActivityDetail itemTxcStep01=new TbTransactionActivityDetail();
+        TbTransactionActivityDetail itemTxcStep01 = new TbTransactionActivityDetail();
         itemTxcStep01.setTxcId(transactionId);
         itemTxcStep01.setTxcBranceId(txcBranceId);
         itemTxcStep01.setTxcDetailJaon(txcDetailJaon);
@@ -58,19 +59,19 @@ public class ITransaction4UnitTest extends A1BaseUnitTest {
         itemTxcStep01.setGmtCreate(new Date());
         itemTxcStep01.setGmtModified(new Date());
         iTransactionActivityDetailInf.insert(itemTxcStep01);
-        log.info("扣款日志:"+txcDetailJaon);
+        log.info("扣款日志:" + txcDetailJaon);
         //--------------------
         //事务-转账交易-完成
         completeTransaction();
     }
 
     private void initTransaction() {
-        Long transactionId=System.currentTimeMillis();
-        ITransactionActivityEnum.Activities activitiy=ITransactionActivityEnum.Activities.TRANSFER_MONEY;
-        ITransactionActivityEnum.TriggerStatus triggerStatus=ITransactionActivityEnum.TriggerStatus.RUNNING;
-        ITransactionActivityEnum.ExecuteStatus executeStatus=ITransactionActivityEnum.ExecuteStatus.EXECUTE_RUNNING;
+        Long transactionId = System.currentTimeMillis();
+        ITransactionActivityEnum.Activities activitiy = ITransactionActivityEnum.Activities.TRANSFER_MONEY;
+        ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.RUNNING;
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_RUNNING;
         //
-        TbTransactionActivity item=new TbTransactionActivity();
+        TbTransactionActivity item = new TbTransactionActivity();
         item.setTxcId(transactionId);
         item.setTxcActivityCode(activitiy.getCode());
         item.setTxcActivityName(activitiy.getName());
@@ -85,13 +86,14 @@ public class ITransaction4UnitTest extends A1BaseUnitTest {
         //把全局的事务ID绑定到当前事务的上下文
         TransactionContext.bind(transactionId);
     }
+
     private void completeTransaction() {
-        Long transactionId=TransactionContext.getTransactionId();
-        TbTransactionActivity tbTransactionActivity=iTransactionActivityInf.selectByTxcId(transactionId);
-        ITransactionActivityEnum.TriggerStatus triggerStatus=ITransactionActivityEnum.TriggerStatus.COMPETE;
-        ITransactionActivityEnum.ExecuteStatus executeStatus=ITransactionActivityEnum.ExecuteStatus.EXECUTE_SUCCESS;
+        Long transactionId = TransactionContext.getTransactionId();
+        TbTransactionActivity tbTransactionActivity = iTransactionActivityInf.selectByTxcId(transactionId);
+        ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.COMPETE;
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_SUCCESS;
         //
-        TbTransactionActivity item=new TbTransactionActivity();
+        TbTransactionActivity item = new TbTransactionActivity();
         item.setId(tbTransactionActivity.getId());
         item.setTxcTriggerStatus(triggerStatus.getStatus());
         item.setTxcExecuteStatus(executeStatus.getStatus());

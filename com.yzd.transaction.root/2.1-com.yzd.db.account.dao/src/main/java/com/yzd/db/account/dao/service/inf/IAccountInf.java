@@ -21,4 +21,12 @@ public interface IAccountInf {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     int payment(TbAccount4Payment item);
+
+    /**
+     * 转账
+     * @param item
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    int transfer(TbAccount4Payment item);
 }

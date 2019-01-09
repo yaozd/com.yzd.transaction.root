@@ -3,7 +3,9 @@ package com.yzd.db.account.dao.service.impl;
 import com.yzd.db.account.dao.dao.TbAccountDao;
 import com.yzd.db.account.dao.dao.TbTxcMessageDao;
 import com.yzd.db.account.dao.service.inf.IAccountInf;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
+import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
 import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTxcMessage;
 import com.yzd.db.account.entity.tableExt.TbAccountExt.TbAccount4Payment;
@@ -57,5 +59,15 @@ public class AccountImpl implements IAccountInf {
         tbTxcMessage.setGmtModified(new Date());
         tbTxcMessageDao.logMessage(tbTxcMessage);
         return rowCount;
+    }
+
+    @Override
+    public int transfer(TbAccount4Payment item) {
+        TransactionContext.bindBranchTransaction(ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER,item);
+        //
+        if(System.currentTimeMillis()>100000000L) throw new IllegalStateException("模拟异常");
+        //
+        TransactionContext.unbindBranchTransaction();
+        return 0;
     }
 }
