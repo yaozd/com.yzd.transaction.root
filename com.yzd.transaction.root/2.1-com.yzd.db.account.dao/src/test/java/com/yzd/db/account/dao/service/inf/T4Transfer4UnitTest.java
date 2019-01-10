@@ -1,14 +1,17 @@
 package com.yzd.db.account.dao.service.inf;
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
+import com.yzd.db.account.dao.utils.bean4ext.SpringContextUtil;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
 import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTransactionActivity;
 import com.yzd.db.account.entity.tableExt.TbAccountExt.TbAccount4Payment;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Date;
 
@@ -17,15 +20,22 @@ import java.util.Date;
  */
 @Slf4j
 public class T4Transfer4UnitTest extends A1BaseUnitTest {
+    //加载当前的上下文信息
+    @Autowired
+    ApplicationContext applicationContext;
     @Autowired
     IAccountInf iAccountInf;
     @Autowired
     ITransactionActivityInf iTransactionActivityInf;
+    @Before // 在测试开始前初始化工作
+    public void setup() {
+        SpringContextUtil.getInstance().setCtx(applicationContext);
+    }
 
     @Test
     public void transfer() {
         //事务-转账交易-初始化
-        initTransaction();
+        initTransaction(ITransactionActivityEnum.Activities.TRANSFER_MONEY);
         try {
             //
             //事务-转账交易-状态更新-扣款
@@ -48,16 +58,19 @@ public class T4Transfer4UnitTest extends A1BaseUnitTest {
         completeTransaction();
     }
 
-    private void initTransaction() {
+    /**
+     * 事务初始化
+     * @param currentActivities 当前事务
+     */
+    private void initTransaction( ITransactionActivityEnum.Activities currentActivities) {
         Long transactionId = System.currentTimeMillis();
-        ITransactionActivityEnum.Activities activitiy = ITransactionActivityEnum.Activities.TRANSFER_MONEY;
         ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.RUNNING;
         ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_RUNNING;
         //
         TbTransactionActivity item = new TbTransactionActivity();
         item.setTxcId(transactionId);
-        item.setTxcActivityCode(activitiy.getCode());
-        item.setTxcActivityName(activitiy.getName());
+        item.setTxcActivityCode(currentActivities.getCode());
+        item.setTxcActivityName(currentActivities.getName());
         item.setTxcTriggerStatus(triggerStatus.getStatus());
         item.setTxcExecuteStatus(executeStatus.getStatus());
         item.setTxcExecuteLog("");

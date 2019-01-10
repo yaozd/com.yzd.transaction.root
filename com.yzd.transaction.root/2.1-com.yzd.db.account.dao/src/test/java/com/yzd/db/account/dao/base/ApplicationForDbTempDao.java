@@ -1,7 +1,5 @@
 package com.yzd.db.account.dao.base;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,9 +10,5 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @ComponentScan("com.yzd.db.account.dao")
 public class ApplicationForDbTempDao {
-    public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(ApplicationForDbTempDao.class);
-        app.setBannerMode(Banner.Mode.OFF);
-        app.run(args);
-    }
+
 }

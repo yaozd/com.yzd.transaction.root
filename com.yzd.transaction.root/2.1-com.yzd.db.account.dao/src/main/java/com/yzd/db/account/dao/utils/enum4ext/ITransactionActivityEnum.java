@@ -61,9 +61,11 @@ public interface ITransactionActivityEnum {
 
     /**
      * 主事务-执行结果
+     * PS:
+     * INVALID_TRANSACTION(无效的事务):指事务只是做了初始化，并没有实际运行。
      */
     enum ExecuteStatus implements ITransactionActivityEnum {
-        EXECUTE_RUNNING(1,"正在执行"),EXECUTE_EXCEPTION(2,"执行异常"),EXECUTE_SUCCESS(3,"执行成功"),ROLLBACK_SUCCESS(4,"回滚成功");
+        EXECUTE_RUNNING(1,"正在执行"),EXECUTE_EXCEPTION(2,"执行异常"),EXECUTE_SUCCESS(3,"执行成功"),ROLLBACK_SUCCESS(4,"回滚成功"),INVALID_TRANSACTION(999,"无效的事务");
         //region
         //---------------------------------------------------
         private ExecuteStatus(Integer status, String describe) {

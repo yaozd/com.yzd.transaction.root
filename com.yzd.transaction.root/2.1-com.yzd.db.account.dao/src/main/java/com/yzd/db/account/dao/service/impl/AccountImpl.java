@@ -5,6 +5,7 @@ import com.yzd.db.account.dao.dao.TbTxcMessageDao;
 import com.yzd.db.account.dao.service.inf.IAccountInf;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
+import com.yzd.db.account.dao.utils.throw4ext.ThrowUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
 import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTxcMessage;
@@ -64,10 +65,13 @@ public class AccountImpl implements IAccountInf {
     @Override
     public int transfer(TbAccount4Payment item) {
         TransactionContext.bindBranchTransaction(ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER,item);
+        //模拟异常
+        //ThrowUtil.mockException();
         //
-        if(System.currentTimeMillis()>100000000L) throw new IllegalStateException("模拟异常");
+        //业务逻辑
         //
         TransactionContext.unbindBranchTransaction();
         return 0;
     }
+
 }
