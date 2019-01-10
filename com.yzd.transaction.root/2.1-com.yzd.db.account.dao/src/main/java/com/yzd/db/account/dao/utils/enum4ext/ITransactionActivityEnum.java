@@ -21,9 +21,18 @@ public interface ITransactionActivityEnum {
         private final String name;
         private final Integer code;
 
+        /**
+         * 事务活动代码
+         * @return
+         */
         public Integer getCode() {
             return code;
         }
+
+        /**
+         * 事务活动名称
+         * @return
+         */
         public String getName() {
             return name;
         }

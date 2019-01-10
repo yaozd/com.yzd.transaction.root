@@ -1,13 +1,17 @@
 package com.yzd.db.account.dao.utils.transaction4ext;
 
 import com.yzd.db.account.dao.service.inf.ITransactionActivityDetailInf;
+import com.yzd.db.account.dao.service.inf.ITransactionActivityInf;
 import com.yzd.db.account.dao.utils.bean4ext.SpringContextUtil;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
+import com.yzd.db.account.entity.table.TbTransactionActivity;
 import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 @Slf4j
 public class TransactionContext {
@@ -56,6 +60,102 @@ public class TransactionContext {
     public static Long getTransactionId() {
         return get().getTransactionId();
     }
+    //===========================================
+
+    /**
+     * 事务初始化
+     *
+     * @param currentActivities
+     */
+    public static void initTransaction(ITransactionActivityEnum.Activities currentActivities) {
+        Long transactionId = System.currentTimeMillis();
+        ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.RUNNING;
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_RUNNING;
+        //
+        TbTransactionActivity item = new TbTransactionActivity();
+        item.setTxcId(transactionId);
+        item.setTxcActivityCode(currentActivities.getCode());
+        item.setTxcActivityName(currentActivities.getName());
+        item.setTxcTriggerStatus(triggerStatus.getStatus());
+        item.setTxcExecuteStatus(executeStatus.getStatus());
+        item.setTxcExecuteLog("");
+        item.setGmtCreate(new Date());
+        item.setGmtModified(new Date());
+        item.setGmtIsDeleted(0);
+        //
+        ITransactionActivityInf iTransactionActivityInf = SpringContextUtil.getInstance().getBean(ITransactionActivityInf.class);
+        iTransactionActivityInf.insert(item);
+        //
+        bind(transactionId);
+    }
+
+    /**
+     * 事务执行
+     * @param executor
+     * @param <T>
+     * @return
+     */
+    public static  <T> T executeTransaction(Callable<T> executor){
+        T result;
+        try {
+            result=executor.call();
+        } catch (Exception ex) {
+            //异常再次对外抛出之前，必须要先记录异常，这样可以把异常定位在距离真实出错的类上，方便问题定位。
+            log.error("事务异常：",ex);
+            //事务-转账交易-异常
+            exceptionTransaction();
+            throw new IllegalStateException(ex);
+        }
+        //事务-转账交易-完成
+        completeTransaction();
+        return result;
+    }
+
+    /**
+     * 事务完成
+     */
+    public static void completeTransaction() {
+        Long transactionId = getTransactionId();
+        //
+        ITransactionActivityInf iTransactionActivityInf = SpringContextUtil.getInstance().getBean(ITransactionActivityInf.class);
+        TbTransactionActivity tbTransactionActivity = iTransactionActivityInf.selectByTxcId(transactionId);
+        ITransactionActivityEnum.TriggerStatus triggerStatus = ITransactionActivityEnum.TriggerStatus.COMPETE;
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_SUCCESS;
+        //
+        TbTransactionActivity item = new TbTransactionActivity();
+        item.setId(tbTransactionActivity.getId());
+        item.setTxcTriggerStatus(triggerStatus.getStatus());
+        item.setTxcExecuteStatus(executeStatus.getStatus());
+        item.setGmtModified(new Date());
+        //
+        iTransactionActivityInf.update(item);
+        //
+        unbind();
+    }
+
+    /**
+     *
+     */
+    public static void exceptionTransaction() {
+        Long transactionId = getTransactionId();
+        //
+        if (transactionId == null || transactionId == 0) {
+            throw new IllegalStateException("当前事务没有找到全局的事务ID!");
+        }
+        ITransactionActivityInf iTransactionActivityInf = SpringContextUtil.getInstance().getBean(ITransactionActivityInf.class);
+        TbTransactionActivity tbTransactionActivity = iTransactionActivityInf.selectByTxcId(transactionId);
+        ITransactionActivityEnum.ExecuteStatus executeStatus = ITransactionActivityEnum.ExecuteStatus.EXECUTE_EXCEPTION;
+        //
+        TbTransactionActivity item = new TbTransactionActivity();
+        item.setId(tbTransactionActivity.getId());
+        item.setTxcExecuteStatus(executeStatus.getStatus());
+        item.setGmtModified(new Date());
+        //
+        iTransactionActivityInf.update(item);
+        //
+        unbind();
+    }
+    //===========================================
 
     /**
      * 设置分支事务id
