@@ -7,11 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface IAccountInf {
     /**
-     *
      * @param id
      * @return
      */
     TbAccount selectById(Long id);
+
     /**
      * 扣除用户余额
      * 1.不推荐使用大事务，通过REQUIRES_NEW来缩小事务的范围
@@ -19,14 +19,15 @@ public interface IAccountInf {
      * @param item
      * @return
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    //@Transactional(propagation = Propagation.REQUIRES_NEW)
     int payment(TbAccount4Payment item);
 
     /**
-     * 转账
+     * 转账-通过分布式事务
+     *
      * @param item
      * @return
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    int transfer(TbAccount4Payment item);
+    int paymentByTransactional(TbAccount4Payment item);
 }

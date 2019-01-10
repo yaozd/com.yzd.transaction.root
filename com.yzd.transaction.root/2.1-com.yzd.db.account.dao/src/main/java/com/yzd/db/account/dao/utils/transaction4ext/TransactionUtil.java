@@ -6,9 +6,10 @@ public class TransactionUtil {
     private TransactionUtil() {
         throw new IllegalStateException("Utility class");
     }
-    public static String getTxcBranceId(ITransactionActivityDetailStatusEnum statusEnum){
-        Long transactionId=TransactionContext.getTransactionId();
-        Integer status=statusEnum.getStatus();
-        return transactionId+"-"+String.format("%02d",status);
+
+    public static String getTxcBranceId(ITransactionActivityDetailStatusEnum statusEnum) {
+        Long transactionId = TransactionContext.getTransactionId();
+        Integer status = statusEnum.getStatus();
+        return transactionId + "-" + String.format("%02d", status);
     }
 }

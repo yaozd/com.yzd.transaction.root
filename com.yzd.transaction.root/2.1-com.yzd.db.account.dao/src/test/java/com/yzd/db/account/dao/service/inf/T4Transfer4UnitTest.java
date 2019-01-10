@@ -45,7 +45,7 @@ public class T4Transfer4UnitTest extends A1BaseUnitTest {
             TbAccount4Payment itemPay = TbAccount4Payment.toTbAccout4Payment(item);
             itemPay.setPayMoney(payMoney);
             //
-            iAccountInf.transfer(itemPay);
+            iAccountInf.payment(itemPay);
             //
         } catch (Exception ex) {
             //异常再次对外抛出之前，必须要先记录异常，这样可以把异常定位在距离真实出错的类上，方便问题定位。

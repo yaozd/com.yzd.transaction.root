@@ -7,13 +7,11 @@ public class TbTxcMessage {
 
     private Long txcId;
 
-    private Long txcTraceId;
+    private String txcBranceId;
 
-    private Integer txcTypeValue;
+    private String txcRouteId;
 
-    private String txcTypeName;
-
-    private String messageJson;
+    private Integer txcRollbackStatus;
 
     private Date gmtCreate;
 
@@ -35,36 +33,28 @@ public class TbTxcMessage {
         this.txcId = txcId;
     }
 
-    public Long getTxcTraceId() {
-        return txcTraceId;
+    public String getTxcBranceId() {
+        return txcBranceId;
     }
 
-    public void setTxcTraceId(Long txcTraceId) {
-        this.txcTraceId = txcTraceId;
+    public void setTxcBranceId(String txcBranceId) {
+        this.txcBranceId = txcBranceId == null ? null : txcBranceId.trim();
     }
 
-    public Integer getTxcTypeValue() {
-        return txcTypeValue;
+    public String getTxcRouteId() {
+        return txcRouteId;
     }
 
-    public void setTxcTypeValue(Integer txcTypeValue) {
-        this.txcTypeValue = txcTypeValue;
+    public void setTxcRouteId(String txcRouteId) {
+        this.txcRouteId = txcRouteId == null ? null : txcRouteId.trim();
     }
 
-    public String getTxcTypeName() {
-        return txcTypeName;
+    public Integer getTxcRollbackStatus() {
+        return txcRollbackStatus;
     }
 
-    public void setTxcTypeName(String txcTypeName) {
-        this.txcTypeName = txcTypeName == null ? null : txcTypeName.trim();
-    }
-
-    public String getMessageJson() {
-        return messageJson;
-    }
-
-    public void setMessageJson(String messageJson) {
-        this.messageJson = messageJson == null ? null : messageJson.trim();
+    public void setTxcRollbackStatus(Integer txcRollbackStatus) {
+        this.txcRollbackStatus = txcRollbackStatus;
     }
 
     public Date getGmtCreate() {

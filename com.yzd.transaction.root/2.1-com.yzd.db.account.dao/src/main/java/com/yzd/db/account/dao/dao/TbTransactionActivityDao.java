@@ -9,10 +9,12 @@ import org.springframework.stereotype.Repository;
 public class TbTransactionActivityDao {
     @Autowired
     TbTransactionActivityMapper tbTransactionActivityMapper;
-    public int insertSelective(TbTransactionActivity record){
+
+    public int insertSelective(TbTransactionActivity record) {
         return tbTransactionActivityMapper.insertSelective(record);
     }
-    public int updateByPrimaryKeySelective(TbTransactionActivity record){
+
+    public int updateByPrimaryKeySelective(TbTransactionActivity record) {
         return tbTransactionActivityMapper.updateByPrimaryKeySelective(record);
     }
 

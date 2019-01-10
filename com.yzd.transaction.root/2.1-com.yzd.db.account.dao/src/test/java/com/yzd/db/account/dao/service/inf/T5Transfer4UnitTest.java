@@ -27,23 +27,23 @@ public class T5Transfer4UnitTest extends A1BaseUnitTest {
         SpringContextUtil.getInstance().setCtx(applicationContext);
     }
     @Test
-    public void transferByFunction(){
+    public void paymentByTransactional(){
         //事务-转账交易-初始化
         TransactionContext.initTransaction(ITransactionActivityEnum.Activities.TRANSFER_MONEY);
         TransactionContext.executeTransaction(()->{
             //事务-转账交易-状态更新-扣款
-            Long userId = 5L;
+            Long userId = 6L;
             Long payMoney = 10L;
             TbAccount item = iAccountInf.selectById(userId);
             TbAccount4Payment itemPay = TbAccount4Payment.toTbAccout4Payment(item);
             itemPay.setPayMoney(payMoney);
             //
-            iAccountInf.transfer(itemPay);
+            iAccountInf.paymentByTransactional(itemPay);
             return true;
         });
     }
     @Test
-    public void transfer() {
+    public void payment() {
         //事务-转账交易-初始化
         TransactionContext.initTransaction(ITransactionActivityEnum.Activities.TRANSFER_MONEY);
         try {
@@ -55,7 +55,7 @@ public class T5Transfer4UnitTest extends A1BaseUnitTest {
             TbAccount4Payment itemPay = TbAccount4Payment.toTbAccout4Payment(item);
             itemPay.setPayMoney(payMoney);
             //
-            iAccountInf.transfer(itemPay);
+            iAccountInf.paymentByTransactional(itemPay);
             //
         } catch (Exception ex) {
             //异常再次对外抛出之前，必须要先记录异常，这样可以把异常定位在距离真实出错的类上，方便问题定位。

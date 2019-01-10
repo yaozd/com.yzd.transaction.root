@@ -41,6 +41,7 @@ public class TransactionInfo {
     public void setActivityDetailStatusEnum(ITransactionActivityDetailStatusEnum activityDetailStatusEnum) {
         this.activityDetailStatusEnum = activityDetailStatusEnum;
     }
+
     private String transactionBranchDetailJson;
 
     public String getTransactionBranchDetailJson() {

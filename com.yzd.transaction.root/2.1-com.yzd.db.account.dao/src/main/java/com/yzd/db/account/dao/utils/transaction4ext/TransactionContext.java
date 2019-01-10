@@ -91,17 +91,18 @@ public class TransactionContext {
 
     /**
      * 事务执行
+     *
      * @param executor
      * @param <T>
      * @return
      */
-    public static  <T> T executeTransaction(Callable<T> executor){
+    public static <T> T executeTransaction(Callable<T> executor) {
         T result;
         try {
-            result=executor.call();
+            result = executor.call();
         } catch (Exception ex) {
             //异常再次对外抛出之前，必须要先记录异常，这样可以把异常定位在距离真实出错的类上，方便问题定位。
-            log.error("事务异常：",ex);
+            log.error("事务异常：", ex);
             //事务-转账交易-异常
             exceptionTransaction();
             throw new IllegalStateException(ex);
@@ -166,6 +167,11 @@ public class TransactionContext {
         get().setTransactionBranceId(transactionBranceId);
     }
 
+    /**
+     * 分支事务id
+     *
+     * @return
+     */
     public static String getTransactionBranceId() {
         return get().getTransactionBranceId();
     }
@@ -185,6 +191,7 @@ public class TransactionContext {
         if (transactionInfo.getTransactionId() == null || transactionInfo.getTransactionId() == 0) {
             throw new IllegalStateException("当前事务没有找到全局的事务ID!");
         }
+        transactionInfo.setTransactionBranceId(TransactionUtil.getTxcBranceId(activityDetailStatusEnum));
         transactionInfo.setActivityDetailStatusEnum(activityDetailStatusEnum);
         transactionInfo.setTransactionBranchDetailJson(FastJsonUtil.serialize(requestArgs));
     }
@@ -218,5 +225,6 @@ public class TransactionContext {
         log.info("分支事务日志>>>" + FastJsonUtil.serialize(transactionInfo));
         //删除分支事务ID,防止事务重复使用
         transactionInfo.setActivityDetailStatusEnum(null);
+        transactionInfo.setTransactionBranceId(null);
     }
 }

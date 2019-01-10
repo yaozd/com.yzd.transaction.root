@@ -4,16 +4,14 @@
   <resultMap id="BaseResultMap" type="com.yzd.db.account.entity.table.TbTxcMessage">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="txc_id" jdbcType="BIGINT" property="txcId" />
-    <result column="txc_trace_id" jdbcType="BIGINT" property="txcTraceId" />
-    <result column="txc_type_value" jdbcType="INTEGER" property="txcTypeValue" />
-    <result column="txc_type_name" jdbcType="VARCHAR" property="txcTypeName" />
-    <result column="message_json" jdbcType="VARCHAR" property="messageJson" />
+    <result column="txc_brance_id" jdbcType="VARCHAR" property="txcBranceId" />
+    <result column="txc_route_id" jdbcType="VARCHAR" property="txcRouteId" />
+    <result column="txc_rollback_status" jdbcType="INTEGER" property="txcRollbackStatus" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, txc_id, txc_trace_id, txc_type_value, txc_type_name, message_json, gmt_create, 
-    gmt_modified
+    id, txc_id, txc_brance_id, txc_route_id, txc_rollback_status, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,17 +28,14 @@
       <if test="txcId != null">
         txc_id,
       </if>
-      <if test="txcTraceId != null">
-        txc_trace_id,
+      <if test="txcBranceId != null">
+        txc_brance_id,
       </if>
-      <if test="txcTypeValue != null">
-        txc_type_value,
+      <if test="txcRouteId != null">
+        txc_route_id,
       </if>
-      <if test="txcTypeName != null">
-        txc_type_name,
-      </if>
-      <if test="messageJson != null">
-        message_json,
+      <if test="txcRollbackStatus != null">
+        txc_rollback_status,
       </if>
       <if test="gmtCreate != null">
         gmt_create,
@@ -53,17 +48,14 @@
       <if test="txcId != null">
         #{txcId,jdbcType=BIGINT},
       </if>
-      <if test="txcTraceId != null">
-        #{txcTraceId,jdbcType=BIGINT},
+      <if test="txcBranceId != null">
+        #{txcBranceId,jdbcType=VARCHAR},
       </if>
-      <if test="txcTypeValue != null">
-        #{txcTypeValue,jdbcType=INTEGER},
+      <if test="txcRouteId != null">
+        #{txcRouteId,jdbcType=VARCHAR},
       </if>
-      <if test="txcTypeName != null">
-        #{txcTypeName,jdbcType=VARCHAR},
-      </if>
-      <if test="messageJson != null">
-        #{messageJson,jdbcType=VARCHAR},
+      <if test="txcRollbackStatus != null">
+        #{txcRollbackStatus,jdbcType=INTEGER},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -79,17 +71,14 @@
       <if test="txcId != null">
         txc_id = #{txcId,jdbcType=BIGINT},
       </if>
-      <if test="txcTraceId != null">
-        txc_trace_id = #{txcTraceId,jdbcType=BIGINT},
+      <if test="txcBranceId != null">
+        txc_brance_id = #{txcBranceId,jdbcType=VARCHAR},
       </if>
-      <if test="txcTypeValue != null">
-        txc_type_value = #{txcTypeValue,jdbcType=INTEGER},
+      <if test="txcRouteId != null">
+        txc_route_id = #{txcRouteId,jdbcType=VARCHAR},
       </if>
-      <if test="txcTypeName != null">
-        txc_type_name = #{txcTypeName,jdbcType=VARCHAR},
-      </if>
-      <if test="messageJson != null">
-        message_json = #{messageJson,jdbcType=VARCHAR},
+      <if test="txcRollbackStatus != null">
+        txc_rollback_status = #{txcRollbackStatus,jdbcType=INTEGER},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},

@@ -19,7 +19,7 @@ public class TbAccountDao4UnitTest extends A1BaseUnitTest {
         TbAccount item = new TbAccount();
         item.setId(0L);
         item.setUserName("yzd");
-        item.setBalance(0L);
+        item.setBalance(10000L);
         item.setCreateTime(new Date());
         item.setUpdateTime(new Date());
         Integer n = tbAccountDao.insertSelective(item);
