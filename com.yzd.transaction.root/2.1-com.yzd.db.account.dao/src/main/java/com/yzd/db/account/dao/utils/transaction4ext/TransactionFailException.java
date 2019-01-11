@@ -1,6 +1,7 @@
 package com.yzd.db.account.dao.utils.transaction4ext;
 
 /**
+ * 自定义异常
  * 已知情况下：
  * 事务运行失败异常
  */

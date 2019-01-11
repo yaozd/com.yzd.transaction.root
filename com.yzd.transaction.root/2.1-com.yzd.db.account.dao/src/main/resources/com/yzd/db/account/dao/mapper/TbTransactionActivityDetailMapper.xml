@@ -130,4 +130,23 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <!-- /////////////////////////////////////////////////////////////////// -->
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM tb_transaction_activity_detail
+    <where>
+      <if test="pojo.id != null"> AND id = #{pojo.id} </if>
+      <if test="pojo.txcId != null"> AND txc_id = #{pojo.txcId} </if>
+      <if test="pojo.txcBranceId != null"> AND txc_brance_id = #{pojo.txcBranceId} </if>
+      <if test="pojo.txcStepStatus != null"> AND txc_step_status = #{pojo.txcStepStatus} </if>
+      <if test="pojo.txcStepName != null"> AND txc_step_name = #{pojo.txcStepName} </if>
+      <if test="pojo.txcDetailJaon != null"> AND txc_detail_jaon = #{pojo.txcDetailJaon} </if>
+      <if test="pojo.txcRollbackStatus != null"> AND txc_rollback_status = #{pojo.txcRollbackStatus} </if>
+      <if test="pojo.txcLog != null"> AND txc_log = #{pojo.txcLog} </if>
+      <if test="pojo.gmtCreate != null"> AND gmt_create = #{pojo.gmtCreate} </if>
+      <if test="pojo.gmtModified != null"> AND gmt_modified = #{pojo.gmtModified} </if>
+      <if test="pojo.gmtIsDeleted != null"> AND gmt_is_deleted = #{pojo.gmtIsDeleted} </if>
+    </where>
+    LIMIT 1000
+  </select>
 </mapper>

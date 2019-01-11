@@ -5,6 +5,8 @@ import com.yzd.db.account.entity.table.TbTransactionActivity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class TbTransactionActivityDao {
     @Autowired
@@ -20,5 +22,9 @@ public class TbTransactionActivityDao {
 
     public TbTransactionActivity selectByTxcId(Long id) {
         return tbTransactionActivityMapper.selectByTxcId(id);
+    }
+
+    public List<TbTransactionActivity> selectList(TbTransactionActivity record){
+        return tbTransactionActivityMapper.selectList(record);
     }
 }

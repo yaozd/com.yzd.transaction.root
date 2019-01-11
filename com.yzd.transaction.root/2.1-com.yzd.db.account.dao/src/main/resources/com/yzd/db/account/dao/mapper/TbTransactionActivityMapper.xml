@@ -1,130 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yzd.db.account.dao.mapper.TbTransactionActivityMapper">
-  <resultMap id="BaseResultMap" type="com.yzd.db.account.entity.table.TbTransactionActivity">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="txc_id" jdbcType="BIGINT" property="txcId" />
-    <result column="txc_activity_code" jdbcType="INTEGER" property="txcActivityCode" />
-    <result column="txc_activity_name" jdbcType="VARCHAR" property="txcActivityName" />
-    <result column="txc_trigger_status" jdbcType="INTEGER" property="txcTriggerStatus" />
-    <result column="txc_execute_status" jdbcType="INTEGER" property="txcExecuteStatus" />
-    <result column="txc_execute_log" jdbcType="VARCHAR" property="txcExecuteLog" />
-    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
-    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
-    <result column="gmt_is_deleted" jdbcType="INTEGER" property="gmtIsDeleted" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.yzd.db.account.entity.table.TbTransactionActivity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="txc_id" jdbcType="BIGINT" property="txcId"/>
+        <result column="txc_activity_code" jdbcType="INTEGER" property="txcActivityCode"/>
+        <result column="txc_activity_name" jdbcType="VARCHAR" property="txcActivityName"/>
+        <result column="txc_trigger_status" jdbcType="INTEGER" property="txcTriggerStatus"/>
+        <result column="txc_execute_status" jdbcType="INTEGER" property="txcExecuteStatus"/>
+        <result column="txc_execute_log" jdbcType="VARCHAR" property="txcExecuteLog"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="gmt_is_deleted" jdbcType="INTEGER" property="gmtIsDeleted"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, txc_id, txc_activity_code, txc_activity_name, txc_trigger_status, txc_execute_status,
     txc_execute_log, gmt_create, gmt_modified, gmt_is_deleted
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from tb_transaction_activity
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <insert id="insertSelective" parameterType="com.yzd.db.account.entity.table.TbTransactionActivity">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into tb_transaction_activity
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="txcId != null">
-        txc_id,
-      </if>
-      <if test="txcActivityCode != null">
-        txc_activity_code,
-      </if>
-      <if test="txcActivityName != null">
-        txc_activity_name,
-      </if>
-      <if test="txcTriggerStatus != null">
-        txc_trigger_status,
-      </if>
-      <if test="txcExecuteStatus != null">
-        txc_execute_status,
-      </if>
-      <if test="txcExecuteLog != null">
-        txc_execute_log,
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create,
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified,
-      </if>
-      <if test="gmtIsDeleted != null">
-        gmt_is_deleted,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="txcId != null">
-        #{txcId,jdbcType=BIGINT},
-      </if>
-      <if test="txcActivityCode != null">
-        #{txcActivityCode,jdbcType=INTEGER},
-      </if>
-      <if test="txcActivityName != null">
-        #{txcActivityName,jdbcType=VARCHAR},
-      </if>
-      <if test="txcTriggerStatus != null">
-        #{txcTriggerStatus,jdbcType=INTEGER},
-      </if>
-      <if test="txcExecuteStatus != null">
-        #{txcExecuteStatus,jdbcType=INTEGER},
-      </if>
-      <if test="txcExecuteLog != null">
-        #{txcExecuteLog,jdbcType=VARCHAR},
-      </if>
-      <if test="gmtCreate != null">
-        #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtIsDeleted != null">
-        #{gmtIsDeleted,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yzd.db.account.entity.table.TbTransactionActivity">
-    update tb_transaction_activity
-    <set>
-      <if test="txcId != null">
-        txc_id = #{txcId,jdbcType=BIGINT},
-      </if>
-      <if test="txcActivityCode != null">
-        txc_activity_code = #{txcActivityCode,jdbcType=INTEGER},
-      </if>
-      <if test="txcActivityName != null">
-        txc_activity_name = #{txcActivityName,jdbcType=VARCHAR},
-      </if>
-      <if test="txcTriggerStatus != null">
-        txc_trigger_status = #{txcTriggerStatus,jdbcType=INTEGER},
-      </if>
-      <if test="txcExecuteStatus != null">
-        txc_execute_status = #{txcExecuteStatus,jdbcType=INTEGER},
-      </if>
-      <if test="txcExecuteLog != null">
-        txc_execute_log = #{txcExecuteLog,jdbcType=VARCHAR},
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtIsDeleted != null">
-        gmt_is_deleted = #{gmtIsDeleted,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <!-- /////////////////////////////////////////////////////////////////// -->
-  <select id="selectByTxcId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from tb_transaction_activity
-    where txc_id = #{txcId,jdbcType=BIGINT}
-  </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_transaction_activity
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insertSelective" parameterType="com.yzd.db.account.entity.table.TbTransactionActivity">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into tb_transaction_activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="txcId != null">
+                txc_id,
+            </if>
+            <if test="txcActivityCode != null">
+                txc_activity_code,
+            </if>
+            <if test="txcActivityName != null">
+                txc_activity_name,
+            </if>
+            <if test="txcTriggerStatus != null">
+                txc_trigger_status,
+            </if>
+            <if test="txcExecuteStatus != null">
+                txc_execute_status,
+            </if>
+            <if test="txcExecuteLog != null">
+                txc_execute_log,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="gmtIsDeleted != null">
+                gmt_is_deleted,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="txcId != null">
+                #{txcId,jdbcType=BIGINT},
+            </if>
+            <if test="txcActivityCode != null">
+                #{txcActivityCode,jdbcType=INTEGER},
+            </if>
+            <if test="txcActivityName != null">
+                #{txcActivityName,jdbcType=VARCHAR},
+            </if>
+            <if test="txcTriggerStatus != null">
+                #{txcTriggerStatus,jdbcType=INTEGER},
+            </if>
+            <if test="txcExecuteStatus != null">
+                #{txcExecuteStatus,jdbcType=INTEGER},
+            </if>
+            <if test="txcExecuteLog != null">
+                #{txcExecuteLog,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtIsDeleted != null">
+                #{gmtIsDeleted,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yzd.db.account.entity.table.TbTransactionActivity">
+        update tb_transaction_activity
+        <set>
+            <if test="txcId != null">
+                txc_id = #{txcId,jdbcType=BIGINT},
+            </if>
+            <if test="txcActivityCode != null">
+                txc_activity_code = #{txcActivityCode,jdbcType=INTEGER},
+            </if>
+            <if test="txcActivityName != null">
+                txc_activity_name = #{txcActivityName,jdbcType=VARCHAR},
+            </if>
+            <if test="txcTriggerStatus != null">
+                txc_trigger_status = #{txcTriggerStatus,jdbcType=INTEGER},
+            </if>
+            <if test="txcExecuteStatus != null">
+                txc_execute_status = #{txcExecuteStatus,jdbcType=INTEGER},
+            </if>
+            <if test="txcExecuteLog != null">
+                txc_execute_log = #{txcExecuteLog,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtIsDeleted != null">
+                gmt_is_deleted = #{gmtIsDeleted,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!-- /////////////////////////////////////////////////////////////////// -->
+    <select id="selectByTxcId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_transaction_activity
+        where txc_id = #{txcId,jdbcType=BIGINT}
+    </select>
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tb_transaction_activity
+        <where>
+            <if test="pojo.id != null">AND id = #{pojo.id}</if>
+            <if test="pojo.txcId != null">AND txc_id = #{pojo.txcId}</if>
+            <if test="pojo.txcActivityCode != null">AND txc_activity_code = #{pojo.txcActivityCode}</if>
+            <if test="pojo.txcActivityName != null">AND txc_activity_name = #{pojo.txcActivityName}</if>
+            <if test="pojo.txcTriggerStatus != null">AND txc_trigger_status = #{pojo.txcTriggerStatus}</if>
+            <if test="pojo.txcExecuteStatus != null">AND txc_execute_status = #{pojo.txcExecuteStatus}</if>
+            <if test="pojo.txcExecuteLog != null">AND txc_execute_log = #{pojo.txcExecuteLog}</if>
+            <if test="pojo.gmtCreate != null">AND gmt_create <![CDATA[ <= ]]> #{pojo.gmtCreate}</if>
+            <if test="pojo.gmtModified != null">AND gmt_modified = #{pojo.gmtModified}</if>
+            <if test="pojo.gmtIsDeleted != null">AND gmt_is_deleted = #{pojo.gmtIsDeleted}</if>
+        </where>
+        LIMIT 1000
+    </select>
 </mapper>

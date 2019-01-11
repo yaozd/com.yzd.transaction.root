@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class TransactionActivityImpl implements ITransactionActivityInf {
@@ -27,5 +29,10 @@ public class TransactionActivityImpl implements ITransactionActivityInf {
     @Override
     public TbTransactionActivity selectByTxcId(Long id) {
         return tbTransactionActivityDao.selectByTxcId(id);
+    }
+
+    @Override
+    public List<TbTransactionActivity> selectList(TbTransactionActivity record) {
+        return tbTransactionActivityDao.selectList(record);
     }
 }

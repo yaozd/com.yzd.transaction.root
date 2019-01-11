@@ -5,6 +5,8 @@ import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class TbTransactionActivityDetailDao {
     @Autowired
@@ -21,4 +23,8 @@ public class TbTransactionActivityDetailDao {
     public int updateByPrimaryKeySelective(TbTransactionActivityDetail record) {
         return tbTransactionActivityDetailMapper.updateByPrimaryKeySelective(record);
     }
+    public List<TbTransactionActivityDetail> selectList(TbTransactionActivityDetail record){
+        return tbTransactionActivityDetailMapper.selectList(record);
+    }
+
 }
