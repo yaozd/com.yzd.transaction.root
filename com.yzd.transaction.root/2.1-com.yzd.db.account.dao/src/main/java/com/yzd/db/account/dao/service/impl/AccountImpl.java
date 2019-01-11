@@ -8,6 +8,7 @@ import com.yzd.db.account.dao.utils.enum4ext.ITxcMessageEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.dao.utils.throw4ext.ThrowUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
+import com.yzd.db.account.dao.utils.transaction4ext.TransactionFailException;
 import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTxcMessage;
 import com.yzd.db.account.entity.tableExt.TbAccountExt.TbAccount4Payment;
@@ -33,7 +34,7 @@ public class AccountImpl implements IAccountInf {
     @Override
     public int payment(TbAccount4Payment item) {
         if (item.getBalance() < item.getPayMoney()) {
-            throw new IllegalStateException("扣款失败：用户余额不足");
+            throw new TransactionFailException("扣款失败：用户余额不足");
         }
         //扣除用户余额
         int rowCount = tbAccountDao.updateByPrimaryKeyForPayment(item);
@@ -47,7 +48,7 @@ public class AccountImpl implements IAccountInf {
             throw new IllegalStateException("模拟异常");
         }
         if (rowCount == 0) {
-            throw new IllegalStateException("扣款失败：操作所影响的行数row_count()=0");
+            throw new TransactionFailException("扣款失败：操作所影响的行数row_count()=0");
         }
         String messageJson = FastJsonUtil.serialize(item);
         //记录日志-扣除用户余额
@@ -82,7 +83,7 @@ public class AccountImpl implements IAccountInf {
         //业务逻辑
         payment(item);
         //模拟异常
-        ThrowUtil.mockException();
+        //ThrowUtil.mockException();
         //
         TransactionContext.unbindBranchTransaction();
         return 0;

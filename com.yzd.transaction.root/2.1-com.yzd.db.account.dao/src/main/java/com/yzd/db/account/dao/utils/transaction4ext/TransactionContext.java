@@ -100,9 +100,16 @@ public class TransactionContext {
         T result;
         try {
             result = executor.call();
-        } catch (Exception ex) {
+        }catch (TransactionFailException ex) {
             //异常再次对外抛出之前，必须要先记录异常，这样可以把异常定位在距离真实出错的类上，方便问题定位。
-            log.error("事务异常：", ex);
+            log.error("已知事务异常：", ex);
+            //事务-转账交易-异常
+            exceptionTransaction();
+            throw new TransactionFailException(ex.getMessage());
+        }
+        catch (Exception ex) {
+            //异常再次对外抛出之前，必须要先记录异常，这样可以把异常定位在距离真实出错的类上，方便问题定位。
+            log.error("未知事务异常：", ex);
             //事务-转账交易-异常
             exceptionTransaction();
             throw new IllegalStateException(ex);

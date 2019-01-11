@@ -24,8 +24,8 @@ public class TbAccount4Payment extends TbAccount {
         item.setId(copy.getId());
         item.setUserName(copy.getUserName());
         item.setBalance(copy.getBalance());
-        item.setCreateTime(copy.getCreateTime());
-        item.setUpdateTime(copy.getUpdateTime());
+        item.setGmtCreate(copy.getGmtCreate());
+        item.setGmtModified(copy.getGmtModified());
         item.setGmtTimestamp(copy.getGmtTimestamp());
         return item;
     }

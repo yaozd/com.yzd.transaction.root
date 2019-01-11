@@ -9,9 +9,9 @@ public class TbAccount {
 
     private Long balance;
 
-    private Date createTime;
+    private Date gmtCreate;
 
-    private Date updateTime;
+    private Date gmtModified;
 
     private Date gmtTimestamp;
 
@@ -39,20 +39,20 @@ public class TbAccount {
         this.balance = balance;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getGmtModified() {
+        return gmtModified;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     public Date getGmtTimestamp() {

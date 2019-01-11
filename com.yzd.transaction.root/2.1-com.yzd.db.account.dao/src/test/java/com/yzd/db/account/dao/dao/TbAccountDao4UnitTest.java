@@ -20,8 +20,8 @@ public class TbAccountDao4UnitTest extends A1BaseUnitTest {
         item.setId(0L);
         item.setUserName("yzd");
         item.setBalance(10000L);
-        item.setCreateTime(new Date());
-        item.setUpdateTime(new Date());
+        item.setGmtCreate(new Date());
+        item.setGmtModified(new Date());
         Integer n = tbAccountDao.insertSelective(item);
         log.info(n.toString());
     }

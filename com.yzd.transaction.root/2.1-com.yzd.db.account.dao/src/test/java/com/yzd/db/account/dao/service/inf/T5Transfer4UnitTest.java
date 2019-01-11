@@ -32,7 +32,7 @@ public class T5Transfer4UnitTest extends A1BaseUnitTest {
         TransactionContext.initTransaction(ITransactionActivityEnum.Activities.TRANSFER_MONEY);
         TransactionContext.executeTransaction(()->{
             //事务-转账交易-状态更新-扣款
-            Long userId = 6L;
+            Long userId = 1L;
             Long payMoney = 10L;
             TbAccount item = iAccountInf.selectById(userId);
             TbAccount4Payment itemPay = TbAccount4Payment.toTbAccout4Payment(item);
