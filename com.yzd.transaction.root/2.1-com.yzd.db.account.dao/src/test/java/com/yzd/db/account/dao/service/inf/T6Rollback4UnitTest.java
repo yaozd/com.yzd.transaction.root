@@ -29,6 +29,8 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
     ITransactionActivityDetailInf iTransactionActivityDetailInf;
     @Autowired
     ITxcMessageInf iTxcMessageInf;
+    @Autowired
+    ITransferMoneyInf ITransferMoneyInf;
     /**
      * 回滚测试-针对超时的事务-模拟数据回滚。
      */
@@ -38,7 +40,7 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
         TbTransactionActivity tbTransactionActivityWhere = new TbTransactionActivity();
         tbTransactionActivityWhere.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.RUNNING.getStatus());
         tbTransactionActivityWhere.setGmtCreate(new Date());
-        tbTransactionActivityWhere.setGmtIsDeleted(0);
+        tbTransactionActivityWhere.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.NO.getValue());
         List<TbTransactionActivity> tbTransactionActivityList = iTransactionActivityInf.selectList(tbTransactionActivityWhere);
         log.info("tbTransactionActivityList count=" + tbTransactionActivityList.size());
         tbTransactionActivityList.forEach(this::doRollback);
@@ -49,10 +51,8 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
         //1.获取到当前事务的访问的锁
         //
         log.info("item=" + FastJsonUtil.serialize(tbTransactionActivity));
-        TbTransactionActivityDetail where = new TbTransactionActivityDetail();
-        where.setTxcId(tbTransactionActivity.getTxcId());
-        where.setGmtIsDeleted(0);
-        List<TbTransactionActivityDetail> tbTransactionActivityDetailList = iTransactionActivityDetailInf.selectList(where);
+        //2.获取到当前主事务中的分支事务列表
+        List<TbTransactionActivityDetail> tbTransactionActivityDetailList = getTbTransactionActivityDetails(tbTransactionActivity.getTxcId());
         int tbTransactionActivityDetailListSize = tbTransactionActivityDetailList.size();
         log.info("tbTransactionActivityDetailList count=" + tbTransactionActivityDetailListSize);
         //情况：无效的事务:指事务只是做了初始化，并没有实际运行
@@ -60,18 +60,22 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
             handlerForNoExistTransactionActivityDetail(tbTransactionActivity.getId());
             return;
         }
-        //确认当前流程的最后一步流程是否已经被执行
+        //确认当前分支事务流程的最后一步流程是否已经被执行
         Optional<TbTransactionActivityDetail> lastStepOptional = tbTransactionActivityDetailList.stream().reduce((s1, s2) -> s1.getTxcStepStatus()>=s2.getTxcStepStatus() ? s1 : s2);
         TbTransactionActivityDetail lastStepActivity=lastStepOptional.orElseThrow( NullPointerException::new);
         boolean isExecutedLastStep=checkLastStepIsExecuted(lastStepActivity);
         if(BooleanUtils.isFalse(isExecutedLastStep)){
+            //移除本地变量
+            tbTransactionActivityDetailList.removeIf(item->item.getId().equals(lastStepActivity.getId()));
+            //更新远程数据
             TbTransactionActivityDetail record=new TbTransactionActivityDetail();
             record.setId(lastStepActivity.getId());
             record.setTxcLog("无效的分支事务:没有找不到对应的本地事务确认日志。分支事务并没有实际运行");
             record.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.YED.getValue());
             iTransactionActivityDetailInf.update(record);
         }
-        //情况：完成事务
+
+        //情况：完成事务--确认当前分支事务流程已全部执行完成
         boolean isCompleted = handlerForCheckTransactionIsCompleted(tbTransactionActivity, tbTransactionActivityDetailList);
         if (isCompleted) {
             TbTransactionActivity record=new TbTransactionActivity();
@@ -84,7 +88,40 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
             iTransactionActivityInf.update(record);
             return;
         }
-        //情况：回滚事务
+        //情况：回滚所有分支事务流程
+        boolean isCompleteRollback= rollbackAllBranchTransactionActivity(tbTransactionActivity.getTxcActivityCode(),tbTransactionActivityDetailList);
+        //如果分支事务流程回滚失败-发起盯盯预警
+        //关闭主事务
+
+    }
+
+    private boolean rollbackAllBranchTransactionActivity(Integer txcActivityCode,List<TbTransactionActivityDetail> tbTransactionActivityDetailList) {
+        ITransactionActivityEnum.Activities activityEnum=ITransactionActivityEnum.Activities.getEnum(txcActivityCode);
+        //标准的分支事务流程
+        NavigableMap<Integer,String> standardStepMap=new TreeMap<Integer, String>(activityEnum.getStepMap()).descendingMap();
+        for(Integer stepCode:standardStepMap.keySet()){
+            log.info("step="+stepCode);
+            Optional<TbTransactionActivityDetail> stepOptional=tbTransactionActivityDetailList.stream().filter(item->item.getTxcStepStatus().equals(stepCode)).findFirst();
+            if(BooleanUtils.isFalse(stepOptional.isPresent())){
+                log.info("没有找到");
+                continue;
+            }
+            TbTransactionActivityDetail stepDetail=stepOptional.orElseThrow(NullPointerException::new);
+            ITransferMoneyInf.rollback(stepCode,stepDetail);
+        }
+        return false;
+    }
+
+    /**
+     * 获取到当前主事务中的分支事务列表
+     * @param txcId
+     * @return
+     */
+    private List<TbTransactionActivityDetail> getTbTransactionActivityDetails(Long txcId) {
+        TbTransactionActivityDetail where = new TbTransactionActivityDetail();
+        where.setTxcId(txcId);
+        where.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.NO.getValue());
+        return iTransactionActivityDetailInf.selectList(where);
     }
 
     /**
@@ -134,7 +171,10 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
         String standardStepStr=StringUtils.join(standardStepMap.keySet().toArray(),",");
         log.info("标准流程="+standardStepStr);
         Set<Integer>currentStep=new TreeSet<>();
-        tbTransactionActivityDetailList.forEach(item->currentStep.add(item.getTxcStepStatus()));
+        //过滤：已经回滚的分支事务
+        tbTransactionActivityDetailList.stream()
+                .filter(item->item.getTxcRollbackStatus().equals(PublicEnum.GmtIsDeletedEnum.NO.getValue()))
+                .forEach(item->currentStep.add(item.getTxcStepStatus()));
         String currentStepStr=StringUtils.join(currentStep.toArray(),",");
         log.info("当前流程="+currentStepStr);
         return standardStepStr.equals(currentStepStr);
