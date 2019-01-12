@@ -13,22 +13,22 @@ public interface ITransactionActivityEnum {
      * 每个活动对应一个交易流程状态
      */
     enum Activities implements ITransactionActivityEnum {
-        TRANSFER_MONEY(1, "转账交易",ITransactionActivityDetailStatusEnum.TransferMoney.values());
+        TRANSFER_MONEY(1, "转账交易", ITransactionActivityDetailStatusEnum.TransferMoney.values());
 
         //region
         //---------------------------------------------------
-        private Activities(Integer code, String name,ITransactionActivityDetailStatusEnum[] values) {
+        private Activities(Integer code, String name, ITransactionActivityDetailStatusEnum[] values) {
             this.code = code;
             this.name = name;
-            this.stepMap = new TreeMap();
-            for (ITransactionActivityDetailStatusEnum item:values) {
-                stepMap.put(item.getStatus(),item.getName());
+            this.stepMap = new TreeMap<Integer, String>();
+            for (ITransactionActivityDetailStatusEnum item : values) {
+                stepMap.put(item.getStatus(), item.getName());
             }
         }
 
         private final String name;
         private final Integer code;
-        private final SortedMap<Integer,String> stepMap;
+        private final SortedMap<Integer, String> stepMap;
 
         /**
          * 事务活动代码
@@ -47,14 +47,17 @@ public interface ITransactionActivityEnum {
         public String getName() {
             return name;
         }
+
         /**
          * 事务活动的流程集合
          */
-        public SortedMap<Integer,String> getStepMap(){
+        public SortedMap<Integer, String> getStepMap() {
             return stepMap;
         }
+
         /**
          * 获取事务信息
+         *
          * @param code 事务活动代码
          * @return
          */

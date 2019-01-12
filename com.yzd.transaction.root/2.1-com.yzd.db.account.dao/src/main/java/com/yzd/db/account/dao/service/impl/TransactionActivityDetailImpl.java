@@ -26,4 +26,9 @@ public class TransactionActivityDetailImpl implements ITransactionActivityDetail
         return tbTransactionActivityDetailDao.selectList(record);
     }
 
+    @Override
+    public int update(TbTransactionActivityDetail record) {
+        return tbTransactionActivityDetailDao.updateByPrimaryKeySelective(record);
+    }
+
 }

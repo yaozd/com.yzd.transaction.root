@@ -120,7 +120,7 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <!-- /////////////////////////////////////////////////////////////////// -->
+    <!-- //////////////////////////////自定义代码分割线///////////////////////////////////// -->
     <select id="selectByTxcId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

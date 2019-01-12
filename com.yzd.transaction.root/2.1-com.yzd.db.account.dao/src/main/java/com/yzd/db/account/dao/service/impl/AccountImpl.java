@@ -6,12 +6,14 @@ import com.yzd.db.account.dao.service.inf.IAccountInf;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITxcMessageEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
+import com.yzd.db.account.dao.utils.mock4ext.MockUtil;
 import com.yzd.db.account.dao.utils.throw4ext.ThrowUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionFailException;
 import com.yzd.db.account.entity.table.TbAccount;
 import com.yzd.db.account.entity.table.TbTxcMessage;
 import com.yzd.db.account.entity.tableExt.TbAccountExt.TbAccount4Payment;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,25 +34,19 @@ public class AccountImpl implements IAccountInf {
     }
 
     @Override
-    public int payment(TbAccount4Payment item) {
+    public int payment(@NonNull TbAccount4Payment item) {
         if (item.getBalance() < item.getPayMoney()) {
             throw new TransactionFailException("扣款失败：用户余额不足");
         }
         //扣除用户余额
-        int rowCount = tbAccountDao.updateByPrimaryKeyForPayment(item);
-        if (item == null) {
-            try {
-                Thread.sleep(100000);
-            } catch (InterruptedException e) {
-                log.warn("Interrupted!", e);
-                Thread.currentThread().interrupt();
-            }
-            throw new IllegalStateException("模拟异常");
-        }
-        if (rowCount == 0) {
+        int rowCount=tbAccountDao.updateByPrimaryKeyForPayment(item);
+        //模拟异常
+        //MockUtil.mockSleepAndThrowException(1000L);
+        //
+        if (rowCount==0) {
             throw new TransactionFailException("扣款失败：操作所影响的行数row_count()=0");
         }
-        String messageJson = FastJsonUtil.serialize(item);
+        //请求参数：String messageJson = FastJsonUtil.serialize(item);
         //记录日志-扣除用户余额
         Long txcId = TransactionContext.getTransactionId();
         String txcBranchId = TransactionContext.getTransactionBranceId();

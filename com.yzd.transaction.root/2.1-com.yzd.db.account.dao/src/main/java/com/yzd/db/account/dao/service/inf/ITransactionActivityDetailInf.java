@@ -9,4 +9,6 @@ public interface ITransactionActivityDetailInf {
     int insert(TbTransactionActivityDetail record);
 
     List<TbTransactionActivityDetail> selectList(TbTransactionActivityDetail record);
+
+    int update(TbTransactionActivityDetail record);
 }

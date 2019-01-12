@@ -130,7 +130,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <!-- /////////////////////////////////////////////////////////////////// -->
+  <!-- //////////////////////////////自定义代码分割线///////////////////////////////////// -->
   <select id="selectList" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/>
     FROM tb_transaction_activity_detail
