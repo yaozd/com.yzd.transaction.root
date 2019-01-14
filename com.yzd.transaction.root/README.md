@@ -19,6 +19,15 @@ PS:
 4.确认当前分支事务流程已全部执行完成 （PS:过滤掉已经回滚的数据）
 5.回滚所有分支事务流程
 ```
+> 模拟测试事务流程
+```
+//1.模拟-事务执行
+T5Transfer4UnitTest.paymentByTransactional()
+//2.模拟-处理运行超时的事务(PS:发版或网络抖动可能会产生次此类问题)
+T7TimeoutTransaction4UnitTest.handlerForTimeoutTransaction()
+//3.模拟-处理异常的事务-回滚事务
+T8ExceptionTransaction4UnitTest.handlerForExceptionTransaction()
+```
 
 > 参考
 - [Myth分布式事务开源框架（基于消息中间件）-源码解析系列文章](https://juejin.im/post/5a5c63986fb9a01cb64ec517)

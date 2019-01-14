@@ -18,7 +18,7 @@ import java.util.*;
 
 /**
  * 测试-07
- * 处理超时的事务
+ * 处理运行超时的事务
  */
 @Slf4j
 public class T7TimeoutTransaction4UnitTest extends A1BaseUnitTest {
@@ -34,7 +34,8 @@ public class T7TimeoutTransaction4UnitTest extends A1BaseUnitTest {
     ITransferMoneyInf ITransferMoneyInf;
 
     /**
-     * 处理超时的事务
+     * 处理运行超时的事务
+     * PS:发版或网络抖动可能会产生次此类问题
      */
     @Test
     public void handlerForTimeoutTransaction() {

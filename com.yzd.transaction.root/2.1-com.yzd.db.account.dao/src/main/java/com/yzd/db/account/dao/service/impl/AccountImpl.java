@@ -105,6 +105,9 @@ public class AccountImpl implements IAccountInf {
         tbTxcMessageDao.updateByPrimaryKeySelective(item4Update);
         //
         TbAccount record4TbAccount=tbAccountDao.selectByPrimaryKey(item4Log.getId());
+        if(record4TbAccount==null){
+            throw new IllegalStateException(String.format("当前用户ID=%s,没有找到用户信息。",item4Log.getId()));
+        }
         //扣除用户余额
         TbAccount4Payment item4UpdatePayment=TbAccount4Payment.toTbAccout4Payment(record4TbAccount);
         item4UpdatePayment.setPayMoney(-item4Log.getPayMoney());

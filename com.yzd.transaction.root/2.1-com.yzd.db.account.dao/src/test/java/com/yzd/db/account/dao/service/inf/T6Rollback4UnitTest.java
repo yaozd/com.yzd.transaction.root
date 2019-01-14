@@ -131,6 +131,7 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
                 iTransactionActivityDetailInf.update(item4TbTransactionActivityDetailUpdate);
             }
         }
+        //标记主事务--分支事务已回滚完成
         TbTransactionActivity item4TbTransactionActivityUpdate=new TbTransactionActivity();
         item4TbTransactionActivityUpdate.setId(tbTransactionActivity.getId());
         item4TbTransactionActivityUpdate.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.COMPETE.getStatus());
