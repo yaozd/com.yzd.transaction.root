@@ -6,8 +6,6 @@ import com.yzd.db.account.dao.service.inf.IAccountInf;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITxcMessageEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
-import com.yzd.db.account.dao.utils.mock4ext.MockUtil;
-import com.yzd.db.account.dao.utils.throw4ext.ThrowUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionFailException;
 import com.yzd.db.account.entity.table.TbAccount;
@@ -19,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -41,7 +40,7 @@ public class AccountImpl implements IAccountInf {
         //扣除用户余额
         int rowCount=tbAccountDao.updateByPrimaryKeyForPayment(item);
         //模拟异常
-        //MockUtil.mockSleepAndThrowException(1000L);
+        // MockUtil.mockSleepAndThrowException(1000L);
         //
         if (rowCount==0) {
             throw new TransactionFailException("扣款失败：操作所影响的行数row_count()=0");
@@ -83,6 +82,39 @@ public class AccountImpl implements IAccountInf {
         //
         TransactionContext.unbindBranchTransaction();
         return 0;
+    }
+
+    @Override
+    public boolean paymentForRollbackByTransactional(TbTxcMessage whereTxcMessage, TbAccount4Payment item4Log) {
+        return paymentForRollback(whereTxcMessage,item4Log);
+    }
+
+    private boolean paymentForRollback(TbTxcMessage whereTxcMessage,TbAccount4Payment item4Log) {
+        List<TbTxcMessage> tbTxcMessageList= tbTxcMessageDao.selectList(whereTxcMessage);
+        if(tbTxcMessageList.isEmpty()){
+            throw new IllegalStateException("数据回滚时，没有找到对应的本地事物日志！");
+        }
+        TbTxcMessage record=tbTxcMessageList.get(0);
+        if(record.getTxcRollbackStatus().equals(ITxcMessageEnum.RollbackStatus.YES.getStatus())){
+            return true;
+        }
+        //
+        TbTxcMessage item4Update=new TbTxcMessage();
+        item4Update.setId(record.getId());
+        item4Update.setTxcRollbackStatus(ITxcMessageEnum.RollbackStatus.YES.getStatus());
+        tbTxcMessageDao.updateByPrimaryKeySelective(item4Update);
+        //
+        TbAccount record4TbAccount=tbAccountDao.selectByPrimaryKey(item4Log.getId());
+        //扣除用户余额
+        TbAccount4Payment item4UpdatePayment=TbAccount4Payment.toTbAccout4Payment(record4TbAccount);
+        item4UpdatePayment.setPayMoney(-item4Log.getPayMoney());
+        int rowCount=tbAccountDao.updateByPrimaryKeyForPayment(item4UpdatePayment);
+        //
+        if (rowCount==0) {
+            throw new TransactionFailException("回滚扣款失败：操作所影响的行数row_count()=0");
+        }
+        log.info("数据回滚"+FastJsonUtil.serialize(item4UpdatePayment));
+        return true;
     }
 
 }

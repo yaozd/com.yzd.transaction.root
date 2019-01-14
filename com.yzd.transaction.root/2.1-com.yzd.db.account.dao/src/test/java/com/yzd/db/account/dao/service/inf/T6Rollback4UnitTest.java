@@ -71,7 +71,7 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
             TbTransactionActivityDetail record=new TbTransactionActivityDetail();
             record.setId(lastStepActivity.getId());
             record.setTxcLog("无效的分支事务:没有找不到对应的本地事务确认日志。分支事务并没有实际运行");
-            record.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.YED.getValue());
+            record.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.YES.getValue());
             iTransactionActivityDetailInf.update(record);
         }
 
@@ -88,14 +88,27 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
             iTransactionActivityInf.update(record);
             return;
         }
+        //
+        //如果事务没有执行完成，标记为异常，然后再由异常事务回滚程序做统一的事务流程回滚。
+        //
         //情况：回滚所有分支事务流程
-        boolean isCompleteRollback= rollbackAllBranchTransactionActivity(tbTransactionActivity.getTxcActivityCode(),tbTransactionActivityDetailList);
+        boolean isCompleteRollback= rollbackAllBranchTransactionActivity(tbTransactionActivity,tbTransactionActivityDetailList);
         //如果分支事务流程回滚失败-发起盯盯预警
         //关闭主事务
-
+        if(isCompleteRollback){
+            log.info("事务ID={},事务回滚已完成",tbTransactionActivity.getTxcId());
+        }
     }
 
-    private boolean rollbackAllBranchTransactionActivity(Integer txcActivityCode,List<TbTransactionActivityDetail> tbTransactionActivityDetailList) {
+    /**
+     * 回滚所有分支事务流程
+     * @param tbTransactionActivity
+     * @param tbTransactionActivityDetailList
+     * @return
+     */
+    private boolean rollbackAllBranchTransactionActivity(TbTransactionActivity tbTransactionActivity,List<TbTransactionActivityDetail> tbTransactionActivityDetailList) {
+        //
+        Integer txcActivityCode=tbTransactionActivity.getTxcActivityCode();
         ITransactionActivityEnum.Activities activityEnum=ITransactionActivityEnum.Activities.getEnum(txcActivityCode);
         //标准的分支事务流程
         NavigableMap<Integer,String> standardStepMap=new TreeMap<Integer, String>(activityEnum.getStepMap()).descendingMap();
@@ -103,11 +116,30 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
             log.info("step="+stepCode);
             Optional<TbTransactionActivityDetail> stepOptional=tbTransactionActivityDetailList.stream().filter(item->item.getTxcStepStatus().equals(stepCode)).findFirst();
             if(BooleanUtils.isFalse(stepOptional.isPresent())){
-                log.info("没有找到");
+                log.info("step={},没有找到对应的分支事务详情",stepCode);
                 continue;
             }
             TbTransactionActivityDetail stepDetail=stepOptional.orElseThrow(NullPointerException::new);
-            ITransferMoneyInf.rollback(stepCode,stepDetail);
+            //
+            boolean isRollback= ITransferMoneyInf.rollback(stepCode,stepDetail);
+            //先回滚再修改日志，保证执行顺序的。
+            if(isRollback){
+                TbTransactionActivityDetail item4TbTransactionActivityDetailUpdate=new TbTransactionActivityDetail();
+                item4TbTransactionActivityDetailUpdate.setId(stepDetail.getId());
+                item4TbTransactionActivityDetailUpdate.setTxcRollbackStatus(PublicEnum.TxcActivityDetailRollbackStatusEnum.YES.getValue());
+                item4TbTransactionActivityDetailUpdate.setGmtModified(new Date());
+                iTransactionActivityDetailInf.update(item4TbTransactionActivityDetailUpdate);
+            }
+        }
+        TbTransactionActivity item4TbTransactionActivityUpdate=new TbTransactionActivity();
+        item4TbTransactionActivityUpdate.setId(tbTransactionActivity.getId());
+        item4TbTransactionActivityUpdate.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.COMPETE.getStatus());
+        item4TbTransactionActivityUpdate.setTxcExecuteStatus(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_SUCCESS.getStatus());
+        item4TbTransactionActivityUpdate.setTxcExecuteLog(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_SUCCESS.getDescribe());
+        item4TbTransactionActivityUpdate.setGmtModified(new Date());
+        int rowCount=iTransactionActivityInf.update(item4TbTransactionActivityUpdate);
+        if(rowCount>0){
+            return true;
         }
         return false;
     }
@@ -191,12 +223,11 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
     private void handlerForNoExistTransactionActivityDetail(long id) {
         TbTransactionActivity item = new TbTransactionActivity();
         item.setId(id);
-        item.setTxcActivityName("");
         item.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.COMPETE.getStatus());
         item.setTxcExecuteStatus(ITransactionActivityEnum.ExecuteStatus.INVALID_TRANSACTION.getStatus());
         item.setTxcExecuteLog(ITransactionActivityEnum.ExecuteStatus.INVALID_TRANSACTION.getDescribe());
         item.setGmtModified(new Date());
-        item.setGmtIsDeleted(1);
+        item.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.YES.getValue());
         iTransactionActivityInf.update(item);
     }
 }

@@ -20,4 +20,8 @@ public class TbTxcMessageDao {
     public List<TbTxcMessage> selectList(TbTxcMessage record){
         return tbTxcMessageMapper.selectList(record);
     }
+
+    public int updateByPrimaryKeySelective(TbTxcMessage record){
+        return tbTxcMessageMapper.updateByPrimaryKeySelective(record);
+    }
 }

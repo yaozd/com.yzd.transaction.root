@@ -4,5 +4,5 @@ import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
 
 public interface ITransferMoneyInf {
 
-    void rollback(Integer stepCode, TbTransactionActivityDetail stepDetail);
+    boolean rollback(Integer stepCode, TbTransactionActivityDetail stepDetail);
 }

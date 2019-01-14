@@ -1,6 +1,7 @@
 package com.yzd.db.account.dao.service.inf;
 
 import com.yzd.db.account.entity.table.TbAccount;
+import com.yzd.db.account.entity.table.TbTxcMessage;
 import com.yzd.db.account.entity.tableExt.TbAccountExt.TbAccount4Payment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,4 +31,14 @@ public interface IAccountInf {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     int paymentByTransactional(TbAccount4Payment item);
+
+    /**
+     *
+     *
+     * @param whereTxcMessage
+     * @param item
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    boolean paymentForRollbackByTransactional(TbTxcMessage whereTxcMessage, TbAccount4Payment item);
 }
