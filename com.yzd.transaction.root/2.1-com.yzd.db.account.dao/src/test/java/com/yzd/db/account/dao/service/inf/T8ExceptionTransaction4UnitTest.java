@@ -41,7 +41,12 @@ public class T8ExceptionTransaction4UnitTest extends A1BaseUnitTest {
             try {
                 doRollback4ExceptionTransaction(item);
             } catch (Exception ex) {
-                log.info(ex.getMessage());
+                log.error("事务回滚失败异常:",ex);
+                //记录回滚失败的事务
+                //事务回滚失败计数统计，可以通过redis做计数
+                //理论上应该设计为回滚多次以上再标记为回滚异常
+                //理论上应该有单独的表做回滚失败异常日志记录。
+                setRollbackFail(item);
             }
         }
     }
@@ -64,13 +69,7 @@ public class T8ExceptionTransaction4UnitTest extends A1BaseUnitTest {
         //如果分支事务流程回滚失败-发起盯盯预警
         //3.关闭主事务
         if (isCompleteRollback) {
-            TbTransactionActivity item4TbTransactionActivityUpdate = new TbTransactionActivity();
-            item4TbTransactionActivityUpdate.setId(tbTransactionActivity.getId());
-            item4TbTransactionActivityUpdate.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.COMPETE.getStatus());
-            item4TbTransactionActivityUpdate.setTxcExecuteStatus(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_SUCCESS.getStatus());
-            item4TbTransactionActivityUpdate.setTxcExecuteLog(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_SUCCESS.getDescribe());
-            item4TbTransactionActivityUpdate.setGmtModified(new Date());
-            int rowCount = iTransactionActivityInf.update(item4TbTransactionActivityUpdate);
+            int rowCount = setRollbackComplete(tbTransactionActivity);
             if (rowCount == 0) {
                 throw new IllegalStateException("主事务标识回滚完成失败！");
             }
@@ -78,6 +77,34 @@ public class T8ExceptionTransaction4UnitTest extends A1BaseUnitTest {
         }
     }
 
+    /**
+     * 主事务标记为回滚完成
+     * @param tbTransactionActivity
+     * @return
+     */
+    private int setRollbackComplete(TbTransactionActivity tbTransactionActivity) {
+        TbTransactionActivity item4TbTransactionActivityUpdate = new TbTransactionActivity();
+        item4TbTransactionActivityUpdate.setId(tbTransactionActivity.getId());
+        item4TbTransactionActivityUpdate.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.COMPETE.getStatus());
+        item4TbTransactionActivityUpdate.setTxcExecuteStatus(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_SUCCESS.getStatus());
+        item4TbTransactionActivityUpdate.setTxcExecuteLog(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_SUCCESS.getDescribe());
+        item4TbTransactionActivityUpdate.setGmtModified(new Date());
+        return iTransactionActivityInf.update(item4TbTransactionActivityUpdate);
+    }
+    /**
+     * 主事务标记为回滚失败,避免异常事务无限次执行
+     * @param tbTransactionActivity
+     * @return
+     */
+    private int setRollbackFail(TbTransactionActivity tbTransactionActivity) {
+        TbTransactionActivity item4TbTransactionActivityUpdate = new TbTransactionActivity();
+        item4TbTransactionActivityUpdate.setId(tbTransactionActivity.getId());
+        item4TbTransactionActivityUpdate.setTxcTriggerStatus(ITransactionActivityEnum.TriggerStatus.COMPETE.getStatus());
+        item4TbTransactionActivityUpdate.setTxcExecuteStatus(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_FAIL.getStatus());
+        item4TbTransactionActivityUpdate.setTxcExecuteLog(ITransactionActivityEnum.ExecuteStatus.ROLLBACK_FAIL.getDescribe());
+        item4TbTransactionActivityUpdate.setGmtModified(new Date());
+        return iTransactionActivityInf.update(item4TbTransactionActivityUpdate);
+    }
     /**
      * 获取异常的事务列表
      *
