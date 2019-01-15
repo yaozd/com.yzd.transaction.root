@@ -33,7 +33,7 @@
         </javaClientGenerator>
         <!--MVN 命令：mvn mybatis-generator:generate-->
         <!-- 示例-begin-->
-        <table tableName="tb_txc_message" enableDeleteByPrimaryKey="false" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
+        <table tableName="tb_transaction_rollback_fail_log" enableDeleteByPrimaryKey="false" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
             <!--identity=true 代表生成自增长的id -->
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>

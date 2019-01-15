@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzd.db.account.dao.mapper.TbTransactionRollbackFailLogMapper">
+    <resultMap id="BaseResultMap" type="com.yzd.db.account.entity.table.TbTransactionRollbackFailLog">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="txc_id" jdbcType="BIGINT" property="txcId"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="gmt_is_deleted" jdbcType="INTEGER" property="gmtIsDeleted"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
+               type="com.yzd.db.account.entity.table.TbTransactionRollbackFailLog">
+        <result column="fail_log" jdbcType="LONGVARCHAR" property="failLog"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, txc_id, gmt_create, gmt_modified, gmt_is_deleted
+  </sql>
+    <sql id="Blob_Column_List">
+    fail_log
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from tb_transaction_rollback_fail_log
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insertSelective" parameterType="com.yzd.db.account.entity.table.TbTransactionRollbackFailLog">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into tb_transaction_rollback_fail_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="txcId != null">
+                txc_id,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="gmtIsDeleted != null">
+                gmt_is_deleted,
+            </if>
+            <if test="failLog != null">
+                fail_log,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="txcId != null">
+                #{txcId,jdbcType=BIGINT},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtIsDeleted != null">
+                #{gmtIsDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="failLog != null">
+                #{failLog,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.yzd.db.account.entity.table.TbTransactionRollbackFailLog">
+        update tb_transaction_rollback_fail_log
+        <set>
+            <if test="txcId != null">
+                txc_id = #{txcId,jdbcType=BIGINT},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtIsDeleted != null">
+                gmt_is_deleted = #{gmtIsDeleted,jdbcType=INTEGER},
+            </if>
+            <if test="failLog != null">
+                fail_log = #{failLog,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!-- //////////////////////////////自定义代码分割线///////////////////////////////////// -->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM tb_transaction_rollback_fail_log
+        <where>
+            <if test="pojo.id != null">AND id = #{pojo.id}</if>
+            <if test="pojo.txcId != null">AND txc_id = #{pojo.txcId}</if>
+            <if test="pojo.gmtCreate != null">AND gmt_create = #{pojo.gmtCreate}</if>
+            <if test="pojo.gmtModified != null">AND gmt_modified = #{pojo.gmtModified}</if>
+            <if test="pojo.gmtIsDeleted != null">AND gmt_is_deleted = #{pojo.gmtIsDeleted}</if>
+            <if test="pojo.failLog != null">AND fail_log = #{pojo.failLog}</if>
+        </where>
+    </select>
+</mapper>

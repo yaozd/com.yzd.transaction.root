@@ -1,4 +1,5 @@
 package com.yzd.db.account.dao.service.inf;
+import java.util.Date;
 
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
@@ -7,6 +8,7 @@ import com.yzd.db.account.dao.utils.enum4ext.PublicEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.entity.table.TbTransactionActivity;
 import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
+import com.yzd.db.account.entity.table.TbTransactionRollbackFailLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.junit.Test;
@@ -30,6 +32,9 @@ public class T8ExceptionTransaction4UnitTest extends A1BaseUnitTest {
     @Autowired
     ITransferMoneyInf ITransferMoneyInf;
 
+    @Autowired
+    ITransactionRollbackFailLogInf iTransactionRollbackFailLogInf;
+
     /**
      * 处理异常的事务-回滚事务
      */
@@ -46,9 +51,42 @@ public class T8ExceptionTransaction4UnitTest extends A1BaseUnitTest {
                 //事务回滚失败计数统计，可以通过redis做计数
                 //理论上应该设计为回滚多次以上再标记为回滚异常
                 //理论上应该有单独的表做回滚失败异常日志记录。
-                setRollbackFail(item);
+                //
+                insertRollbackFailLog(item.getTxcId(), ex);
+                int rollbackFailLogCount=selectCount4RollbackFailLog(item.getTxcId());
+                log.info("事务回滚失败次数="+rollbackFailLogCount);
+                //避免异常事务无限次执行
+                if(rollbackFailLogCount>3){
+                    setRollbackFail(item);
+                }
             }
         }
+    }
+
+    /**
+     * 查询事务回滚失败次数
+     * @param txcId
+     * @return
+     */
+    private int selectCount4RollbackFailLog(Long txcId) {
+        TbTransactionRollbackFailLog record=new TbTransactionRollbackFailLog();
+        record.setTxcId(txcId);
+        record.setGmtIsDeleted(PublicEnum.GmtIsDeletedEnum.NO.getValue());
+        return iTransactionRollbackFailLogInf.selectCount(record);
+    }
+
+    /**
+     * 插入事务回滚失败日志
+     * @param txcId
+     * @param ex
+     */
+    private void insertRollbackFailLog(Long txcId, Exception ex) {
+        TbTransactionRollbackFailLog record=new TbTransactionRollbackFailLog();
+        record.setTxcId(txcId);
+        record.setGmtCreate(new Date());
+        record.setGmtModified(new Date());
+        record.setFailLog(ex.getMessage());
+        iTransactionRollbackFailLogInf.insertSelective(record);
     }
 
     /**
