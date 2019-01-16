@@ -3,7 +3,8 @@ package com.yzd.db.account.dao.utils.transaction4ext;
 import com.yzd.db.account.dao.service.inf.ITransactionActivityDetailInf;
 import com.yzd.db.account.dao.service.inf.ITransactionActivityInf;
 import com.yzd.db.account.dao.utils.bean4ext.SpringContextUtil;
-import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetail4StepStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.entity.table.TbTransactionActivity;
@@ -188,9 +189,10 @@ public class TransactionContext {
      * 目前暂时事务的路由信息的配置
      *
      * @param activityDetailStatusEnum
-     * @param requestArgs              事务的详细=事务的请求参数
+     * @param databaseNameEnum 分支事务所在的数据库
+     * @param requestArgs 事务的详细=事务的请求参数
      */
-    public static void bindBranchTransaction(ITransactionActivityDetailStatusEnum activityDetailStatusEnum, Object requestArgs) {
+    public static void bindBranchTransaction(ITransactionActivityDetail4StepStatusEnum activityDetailStatusEnum, ITransactionActivityDetailEnum.DatabaseNameEnum databaseNameEnum, Object requestArgs) {
         TransactionInfo transactionInfo = get();
         if (transactionInfo == null) {
             throw new IllegalStateException("当前事务为null,事务没有初始化!");
@@ -201,6 +203,7 @@ public class TransactionContext {
         transactionInfo.setTransactionBranceId(TransactionUtil.getTxcBranceId(activityDetailStatusEnum));
         transactionInfo.setActivityDetailStatusEnum(activityDetailStatusEnum);
         transactionInfo.setTransactionBranchDetailJson(FastJsonUtil.serialize(requestArgs));
+        transactionInfo.setTransactionBranchDatabaseName(databaseNameEnum.name());
     }
 
     /**
@@ -214,10 +217,11 @@ public class TransactionContext {
         //
         Long transactionId = transactionInfo.getTransactionId();
         String txcDetailJson = transactionInfo.getTransactionBranchDetailJson();
-        ITransactionActivityDetailStatusEnum detailStatusEnum = transactionInfo.getActivityDetailStatusEnum();
+        ITransactionActivityDetail4StepStatusEnum detailStatusEnum = transactionInfo.getActivityDetailStatusEnum();
         String txcBranchId = TransactionUtil.getTxcBranceId(detailStatusEnum);
         Integer txcStepState = detailStatusEnum.getStatus();
         String txcStepName = detailStatusEnum.getName();
+        String txcBranchDatabaseName=transactionInfo.getTransactionBranchDatabaseName();
         //
         TbTransactionActivityDetail item = new TbTransactionActivityDetail();
         item.setTxcId(transactionId);
@@ -225,6 +229,7 @@ public class TransactionContext {
         item.setTxcDetailJaon(txcDetailJson);
         item.setTxcStepStatus(txcStepState);
         item.setTxcStepName(txcStepName);
+        item.setTxcDatabaseName(txcBranchDatabaseName);
         item.setGmtCreate(new Date());
         item.setGmtModified(new Date());
         ITransactionActivityDetailInf iTransactionActivityDetailInf = SpringContextUtil.getInstance().getBean(ITransactionActivityDetailInf.class);
@@ -233,5 +238,6 @@ public class TransactionContext {
         //删除分支事务ID,防止事务重复使用
         transactionInfo.setActivityDetailStatusEnum(null);
         transactionInfo.setTransactionBranceId(null);
+        transactionInfo.setTransactionBranchDatabaseName(null);
     }
 }

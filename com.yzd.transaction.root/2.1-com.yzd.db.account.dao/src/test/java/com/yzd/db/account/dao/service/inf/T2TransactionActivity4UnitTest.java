@@ -1,7 +1,7 @@
 package com.yzd.db.account.dao.service.inf;
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
-import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetail4StepStatusEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionUtil;
 import com.yzd.db.account.entity.table.TbTransactionActivity;
@@ -26,7 +26,7 @@ public class T2TransactionActivity4UnitTest extends A1BaseUnitTest {
         //事务-转账交易-初始化
         Long transactionId = initTransaction();
         //---------------------------------------------------------
-        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Transfer = ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
+        ITransactionActivityDetail4StepStatusEnum activityDetailStatusEnum4Transfer = ITransactionActivityDetail4StepStatusEnum.TransferMoney.TRANSFER;
         //事务-转账交易-状态更新-扣款
         TbTransactionActivityDetail itemTxcStep01 = new TbTransactionActivityDetail();
         itemTxcStep01.setTxcId(transactionId);
@@ -39,7 +39,7 @@ public class T2TransactionActivity4UnitTest extends A1BaseUnitTest {
         itemTxcStep01.setGmtModified(new Date());
         iTransactionActivityDetailInf.insert(itemTxcStep01);
         //---------------------------------------------------------
-        ITransactionActivityDetailStatusEnum activityDetailStatusEnum4Enter = ITransactionActivityDetailStatusEnum.TransferMoney.ENTER;
+        ITransactionActivityDetail4StepStatusEnum activityDetailStatusEnum4Enter = ITransactionActivityDetail4StepStatusEnum.TransferMoney.ENTER;
         //事务-转账交易-状态更新-入账
         TbTransactionActivityDetail itemTxcStep02 = new TbTransactionActivityDetail();
         itemTxcStep02.setTxcId(transactionId);

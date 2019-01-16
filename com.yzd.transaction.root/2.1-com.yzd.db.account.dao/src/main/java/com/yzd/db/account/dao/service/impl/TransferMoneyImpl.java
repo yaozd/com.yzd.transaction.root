@@ -1,9 +1,8 @@
 package com.yzd.db.account.dao.service.impl;
-import java.util.Date;
 
 import com.yzd.db.account.dao.service.inf.IAccountInf;
 import com.yzd.db.account.dao.service.inf.ITransferMoneyInf;
-import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetail4StepStatusEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.entity.table.TbTransactionActivityDetail;
 import com.yzd.db.account.entity.table.TbTxcMessage;
@@ -22,11 +21,11 @@ public class TransferMoneyImpl implements ITransferMoneyInf {
         whereTxcMessage.setTxcId(stepDetail.getTxcId());
         whereTxcMessage.setTxcBranceId(stepDetail.getTxcBranceId());
         //
-        if(ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER.getStatus().equals(stepCode)){
+        if(ITransactionActivityDetail4StepStatusEnum.TransferMoney.TRANSFER.getStatus().equals(stepCode)){
             TbAccount4Payment item=FastJsonUtil.deserialize(stepDetail.getTxcDetailJaon(),TbAccount4Payment.class);
             return accountInf.paymentForRollbackByTransactional(whereTxcMessage,item);
         }
-        if(ITransactionActivityDetailStatusEnum.TransferMoney.ENTER.getStatus().equals(stepCode)){
+        if(ITransactionActivityDetail4StepStatusEnum.TransferMoney.ENTER.getStatus().equals(stepCode)){
             return false;
         }
         return false;

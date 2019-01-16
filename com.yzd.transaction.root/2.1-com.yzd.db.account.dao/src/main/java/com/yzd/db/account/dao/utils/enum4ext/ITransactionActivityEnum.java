@@ -13,15 +13,15 @@ public interface ITransactionActivityEnum {
      * 每个活动对应一个交易流程状态
      */
     enum Activities implements ITransactionActivityEnum {
-        TRANSFER_MONEY(1, "转账交易", ITransactionActivityDetailStatusEnum.TransferMoney.values());
+        TRANSFER_MONEY(1, "转账交易", ITransactionActivityDetail4StepStatusEnum.TransferMoney.values());
 
         //region
         //---------------------------------------------------
-        private Activities(Integer code, String name, ITransactionActivityDetailStatusEnum[] values) {
+        private Activities(Integer code, String name, ITransactionActivityDetail4StepStatusEnum[] values) {
             this.code = code;
             this.name = name;
             this.stepMap = new TreeMap<Integer, String>();
-            for (ITransactionActivityDetailStatusEnum item : values) {
+            for (ITransactionActivityDetail4StepStatusEnum item : values) {
                 stepMap.put(item.getStatus(), item.getName());
             }
         }

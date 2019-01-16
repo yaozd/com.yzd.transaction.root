@@ -1,6 +1,7 @@
 package com.yzd.db.account.dao.service.inf;
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.enum4ext.PublicEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
@@ -164,10 +165,7 @@ public class T7TimeoutTransaction4UnitTest extends A1BaseUnitTest {
      * @return
      */
     private boolean checkLastStepIsExecuted(TbTransactionActivityDetail lastStepActivity) {
-        TbTxcMessage record = new TbTxcMessage();
-        record.setTxcId(lastStepActivity.getTxcId());
-        record.setTxcBranceId(lastStepActivity.getTxcBranceId());
-        List<TbTxcMessage> tbTxcMessageList = iTxcMessageInf.selectList(record);
+        List<TbTxcMessage> tbTxcMessageList = getTbTxcMessages(lastStepActivity);
         if (tbTxcMessageList.isEmpty()) {
             return false;
         }
@@ -178,6 +176,24 @@ public class T7TimeoutTransaction4UnitTest extends A1BaseUnitTest {
                     , tbTxcMessageList.size()));
         }
         return true;
+    }
+
+    /**
+     *  确认分支事务是否执行
+     * @param lastStepActivity
+     * @return
+     */
+    private List<TbTxcMessage> getTbTxcMessages(TbTransactionActivityDetail lastStepActivity) {
+        TbTxcMessage record = new TbTxcMessage();
+        record.setTxcId(lastStepActivity.getTxcId());
+        record.setTxcBranceId(lastStepActivity.getTxcBranceId());
+        if(ITransactionActivityDetailEnum.DatabaseNameEnum.USER_DB.name().equals( lastStepActivity.getTxcDatabaseName())){
+            return iTxcMessageInf.selectList(record);
+        }
+        if(ITransactionActivityDetailEnum.DatabaseNameEnum.ORDER_DB.name().equals(lastStepActivity.getTxcDatabaseName())){
+            //
+        }
+        throw new IllegalStateException("没有找到分支事务所在的数据信息");
     }
 
     /**

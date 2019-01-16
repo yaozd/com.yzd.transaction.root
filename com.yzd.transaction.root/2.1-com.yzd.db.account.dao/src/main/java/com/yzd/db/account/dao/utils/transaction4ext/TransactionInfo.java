@@ -1,6 +1,6 @@
 package com.yzd.db.account.dao.utils.transaction4ext;
 
-import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetail4StepStatusEnum;
 
 public class TransactionInfo {
     /**
@@ -32,13 +32,13 @@ public class TransactionInfo {
     /**
      *
      */
-    private ITransactionActivityDetailStatusEnum activityDetailStatusEnum;
+    private ITransactionActivityDetail4StepStatusEnum activityDetailStatusEnum;
 
-    public ITransactionActivityDetailStatusEnum getActivityDetailStatusEnum() {
+    public ITransactionActivityDetail4StepStatusEnum getActivityDetailStatusEnum() {
         return activityDetailStatusEnum;
     }
 
-    public void setActivityDetailStatusEnum(ITransactionActivityDetailStatusEnum activityDetailStatusEnum) {
+    public void setActivityDetailStatusEnum(ITransactionActivityDetail4StepStatusEnum activityDetailStatusEnum) {
         this.activityDetailStatusEnum = activityDetailStatusEnum;
     }
 
@@ -50,5 +50,18 @@ public class TransactionInfo {
 
     public void setTransactionBranchDetailJson(String transactionBranchDetailJson) {
         this.transactionBranchDetailJson = transactionBranchDetailJson;
+    }
+
+    /***
+     * 分支事务所在的数据
+     */
+    private String transactionBranchDatabaseName;
+
+    public String getTransactionBranchDatabaseName() {
+        return transactionBranchDatabaseName;
+    }
+
+    public void setTransactionBranchDatabaseName(String transactionBranchDatabaseName) {
+        this.transactionBranchDatabaseName = transactionBranchDatabaseName;
     }
 }

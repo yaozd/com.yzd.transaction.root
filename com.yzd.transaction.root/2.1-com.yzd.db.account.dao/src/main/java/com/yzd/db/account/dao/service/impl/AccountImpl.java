@@ -3,7 +3,8 @@ package com.yzd.db.account.dao.service.impl;
 import com.yzd.db.account.dao.dao.TbAccountDao;
 import com.yzd.db.account.dao.dao.TbTxcMessageDao;
 import com.yzd.db.account.dao.service.inf.IAccountInf;
-import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetail4StepStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITxcMessageEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
@@ -73,7 +74,7 @@ public class AccountImpl implements IAccountInf {
      */
     @Override
     public int paymentByTransactional(TbAccount4Payment item) {
-        TransactionContext.bindBranchTransaction(ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER, item);
+        TransactionContext.bindBranchTransaction(ITransactionActivityDetail4StepStatusEnum.TransferMoney.TRANSFER,ITransactionActivityDetailEnum.DatabaseNameEnum.USER_DB, item);
         //
         //业务逻辑
         payment(item);

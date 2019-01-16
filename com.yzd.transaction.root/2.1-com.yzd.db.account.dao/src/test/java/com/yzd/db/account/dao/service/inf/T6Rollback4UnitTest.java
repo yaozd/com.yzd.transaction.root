@@ -2,6 +2,7 @@ package com.yzd.db.account.dao.service.inf;
 import java.util.Date;
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.enum4ext.PublicEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
@@ -126,7 +127,7 @@ public class T6Rollback4UnitTest extends A1BaseUnitTest {
             if(isRollback){
                 TbTransactionActivityDetail item4TbTransactionActivityDetailUpdate=new TbTransactionActivityDetail();
                 item4TbTransactionActivityDetailUpdate.setId(stepDetail.getId());
-                item4TbTransactionActivityDetailUpdate.setTxcRollbackStatus(PublicEnum.TxcActivityDetailRollbackStatusEnum.YES.getValue());
+                item4TbTransactionActivityDetailUpdate.setTxcRollbackStatus(ITransactionActivityDetailEnum.RollbackStatusEnum.YES.getValue());
                 item4TbTransactionActivityDetailUpdate.setGmtModified(new Date());
                 iTransactionActivityDetailInf.update(item4TbTransactionActivityDetailUpdate);
             }

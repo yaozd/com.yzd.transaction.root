@@ -19,6 +19,8 @@ public class TbTransactionActivityDetail {
 
     private String txcLog;
 
+    private String txcDatabaseName;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -87,6 +89,14 @@ public class TbTransactionActivityDetail {
 
     public void setTxcLog(String txcLog) {
         this.txcLog = txcLog == null ? null : txcLog.trim();
+    }
+
+    public String getTxcDatabaseName() {
+        return txcDatabaseName;
+    }
+
+    public void setTxcDatabaseName(String txcDatabaseName) {
+        this.txcDatabaseName = txcDatabaseName == null ? null : txcDatabaseName.trim();
     }
 
     public Date getGmtCreate() {

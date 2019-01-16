@@ -1,7 +1,7 @@
 package com.yzd.db.account.dao.service.inf;
 
 import com.yzd.db.account.dao.base.A1BaseUnitTest;
-import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetailStatusEnum;
+import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityDetail4StepStatusEnum;
 import com.yzd.db.account.dao.utils.enum4ext.ITransactionActivityEnum;
 import com.yzd.db.account.dao.utils.fastjson4ext.FastJsonUtil;
 import com.yzd.db.account.dao.utils.transaction4ext.TransactionContext;
@@ -45,7 +45,7 @@ public class T3Transaction4UnitTest extends A1BaseUnitTest {
         //事务-转账交易-状态更新-扣款
         String txcDetailJaon = FastJsonUtil.serialize(itemPay);
         Long transactionId = TransactionContext.getTransactionId();
-        ITransactionActivityDetailStatusEnum detailStatusEnum = ITransactionActivityDetailStatusEnum.TransferMoney.TRANSFER;
+        ITransactionActivityDetail4StepStatusEnum detailStatusEnum = ITransactionActivityDetail4StepStatusEnum.TransferMoney.TRANSFER;
         String txcBranceId = TransactionUtil.getTxcBranceId(detailStatusEnum);
         Integer txcStepState = detailStatusEnum.getStatus();
         String txcStepName = detailStatusEnum.getName();
